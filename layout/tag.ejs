@@ -1,6 +1,10 @@
 <%
 	const current = page.tag;
 	const list = current ? (page.posts || []) : site.tags;
+	// 标签云按文章数倒序，常用的标签排在前面
+	const cloud = current ? [] : list.toArray().sort(function(a, b){
+		return b.posts.length - a.posts.length || a.name.localeCompare(b.name);
+	});
 %>
 <div class="page">
 	<h1 class="page-title">
@@ -9,19 +13,25 @@
 	</h1>
 
 	<% if (!current){ %>
+		<p class="page-desc"><%= __('tag.desc', cloud.length) %></p>
 		<div class="chip-cloud">
-			<% site.tags.forEach(function(t){ %>
+			<% cloud.forEach(function(t){ %>
 				<a class="chip chip-lg" href="<%= url_for(t.path) %>"><%= t.name %> <em><%= t.posts.length %></em></a>
 			<% }); %>
 		</div>
 	<% } else { %>
 		<div class="post-list">
-			<% list.each(function(post){ %>
+			<% list.each(function(post){
+				const brief = strip_html(post.excerpt || post.content || '').substring(0, 120);
+			%>
 				<a class="post-item" href="<%= url_for(post.path) %>">
 					<div class="post-item-main">
 						<div class="post-item-title"><%= post.title %></div>
+						<% if (brief){ %><p class="post-item-brief"><%= brief %>…</p><% } %>
 					</div>
-					<div class="post-item-meta"><time><%= date(post.date, 'YYYY-MM-DD') %></time></div>
+					<div class="post-item-meta">
+						<time><%= date(post.updated || post.date, 'YYYY-MM-DD') %></time>
+					</div>
 				</a>
 			<% }); %>
 		</div>

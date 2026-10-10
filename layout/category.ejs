@@ -1,29 +1,121 @@
 <%
+	// 分类页有两种形态：
+	//   1. /categories/          -> 主题地图：一级分类分组 + 二级分类 + 每组最新几篇
+	//   2. /categories/Xxx/      -> 单分类：面包屑 + 分区头 + 子分类 + 该分类全部文章
+	// 全站只有这一处完整呈现「分类 -> 文章」的对应关系，
+	// /notes/ 只做时间线、首页只做精选，避免同一份内容在三处重复。
 	const current = page.category;
-	const list = current ? (page.posts || []) : site.categories;
+	const detail = current ? cat_detail(current) : null;
+	const groups = cat_groups({ recent: 5 });
+	const totalPosts = site.posts.length;
 %>
-<div class="page">
-	<h1 class="page-title">
-		<%= current ? current : __('category.title') %>
-		<% if (current){ %><span class="page-count"><%= list.length %> <%= __('unit.post') %></span><% } %>
-	</h1>
 
-	<% if (!current){ %>
-		<div class="chip-cloud">
-			<% site.categories.forEach(function(c){ %>
-				<a class="chip chip-lg" href="<%= url_for(c.path) %>"><%= c.name %> <em><%= c.posts.length %></em></a>
-			<% }); %>
-		</div>
-	<% } else { %>
+<% if (detail){ %>
+	<div class="cat-detail">
+
+		<nav class="cat-crumb" aria-label="分类路径">
+			<a href="<%= url_for('/categories/') %>">
+				<i class="fa fa-folder-open" aria-hidden="true"></i> <%= __('category.title') %>
+			</a>
+			<% if (detail.top){ %>
+				<i class="fa fa-angle-right" aria-hidden="true"></i>
+				<a href="<%= url_for(detail.top.cat.path) %>"><%= detail.top.name %></a>
+			<% } %>
+			<i class="fa fa-angle-right" aria-hidden="true"></i>
+			<span><%= detail.name %></span>
+		</nav>
+
+		<header class="cat-head tone-<%= detail.color %>">
+			<span class="cat-head-icon"><i class="fa fa-<%= detail.icon %>" aria-hidden="true"></i></span>
+			<div class="cat-head-text">
+				<h1 class="cat-head-name"><%= detail.name %></h1>
+				<% if (detail.desc){ %><p class="cat-head-desc"><%= detail.desc %></p><% } %>
+			</div>
+			<div class="cat-head-count">
+				<b><%= detail.count %></b>
+				<span><%= __('unit.post') %></span>
+			</div>
+		</header>
+
+		<% if (detail.children.length){ %>
+			<div class="cat-sub">
+				<span class="cat-sub-label"><%= __('category.sub') %></span>
+				<% detail.children.forEach(function(c){ %>
+					<a class="chip chip-lg" href="<%= url_for(c.path) %>">
+						<%= c.name %> <em><%= c.posts.length %></em>
+					</a>
+				<% }); %>
+			</div>
+		<% } %>
+
+		<h2 class="notes-subtitle">
+			<%= __('category.posts') %> <span class="notes-subtitle-count"><%= detail.count %></span>
+		</h2>
+
 		<div class="post-list">
-			<% list.each(function(post){ %>
+			<% detail.posts.forEach(function(post){
+				const brief = strip_html(post.excerpt || post.content || '').substring(0, 120);
+			%>
 				<a class="post-item" href="<%= url_for(post.path) %>">
 					<div class="post-item-main">
 						<div class="post-item-title"><%= post.title %></div>
+						<% if (brief){ %><p class="post-item-brief"><%= brief %>…</p><% } %>
 					</div>
-					<div class="post-item-meta"><time><%= date(post.date, 'YYYY-MM-DD') %></time></div>
+					<div class="post-item-meta">
+						<time><%= date(post.updated || post.date, 'YYYY-MM-DD') %></time>
+					</div>
 				</a>
 			<% }); %>
 		</div>
-	<% } %>
-</div>
+
+	</div>
+
+<% } else { %>
+	<div class="cat-map">
+
+		<header class="page-head">
+			<h1 class="page-title"><%= __('category.title') %></h1>
+			<p class="page-desc"><%= __('category.desc', groups.length, totalPosts) %></p>
+		</header>
+
+		<% groups.forEach(function(g){ %>
+			<section class="cat-block tone-<%= g.color %>">
+				<header class="cat-block-head">
+					<span class="cat-block-icon"><i class="fa fa-<%= g.icon %>" aria-hidden="true"></i></span>
+
+					<div class="cat-block-title">
+						<h2><a href="<%= url_for(g.cat.path) %>"><%= g.name %></a></h2>
+						<% if (g.desc){ %><p><%= g.desc %></p><% } %>
+					</div>
+
+					<a class="cat-block-more" href="<%= url_for(g.cat.path) %>">
+						<b><%= g.count %></b> <%= __('unit.post') %>
+						<i class="fa fa-angle-right" aria-hidden="true"></i>
+					</a>
+				</header>
+
+				<% if (g.children.length){ %>
+					<div class="cat-sub">
+						<% g.children.forEach(function(c){ %>
+							<a class="chip" href="<%= url_for(c.path) %>">
+								<%= c.name %> <em><%= c.posts.length %></em>
+							</a>
+						<% }); %>
+					</div>
+				<% } %>
+
+				<% if (g.posts.length){ %>
+					<div class="cat-block-posts">
+						<% g.posts.forEach(function(post){ %>
+							<a class="cat-post" href="<%= url_for(post.path) %>">
+								<span class="cat-post-title"><%= post.title %></span>
+								<time><%= date(post.updated || post.date, 'YYYY-MM-DD') %></time>
+							</a>
+						<% }); %>
+					</div>
+				<% } %>
+			</section>
+		<% }); %>
+
+	</div>
+<% } %>

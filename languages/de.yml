@@ -5,28 +5,75 @@ about:
 
 tag:
   title: "Schlagwörter"
-  postTotal: "Gjeldende %d tagger totalt"
+  postTotal: "Aktuell insgesamt %d Schlagwörter"
+  desc: "%d Schlagwörter, nach Verwendung sortiert."
 
 category:
   title: "Kategorien"
-  postTotal: "Gjeldende %d kategorier totalt"
+  postTotal: "Aktuell insgesamt %d Kategorien"
+  desc: "%d Themen mit %d Notizen. Nach Thema stöbern, jedes enthält seine Unterkategorien."
+  sub: "Unterkategorien"
+  posts: "Notizen"
 
-footer:
-  pv: "Alle Aufrufe"
-  uv: "Alle Besucher"
+archive:
+  title: "Archiv"
+
+unit:
+  post: "Beiträge"
+  category: "Themen"
+  tag: "Schlagwörter"
+
+notes:
+  title: "Notizen"
+  all: "Alle Notizen"
+  desc: "Der Baum links enthält %d Notizen – aufklappen, um zu stöbern."
+  list: "Chronik"
+  recent: "Kürzlich aktualisiert"
+  more: "Alle ansehen"
+  by_category: "Nach Thema stöbern"
+
+home:
+  skills: "Fähigkeiten"
+  experience: "Berufserfahrung"
+  education: "Ausbildung"
+  enter: "Notizen ansehen"
 
 search:
-  placeholder: "Trykk Enter for å søke på hele nettstedet"
+  placeholder: "Baum filtern, Enter für die Seitensuche"
+
+footer:
+  pv: "Aufrufe"
+  uv: "Besucher"
+  powered: "Läuft mit %s"
+  theme: "Theme %s"
 
 post:
+  words: "Wörter"
+  prev: "Zurück"
+  next: "Weiter"
+  copy: "Kopieren"
+  copied: "Kopiert"
   copyright:
     author: "Beitragsautor"
     posted: "Veröffentlicht am"
     updated: "Geändert am"
-    licensed: "Urheberrechtshinweis"
+    licensed: "Lizenziert unter"
+    link: "Link"
     CC: "CC - Creative Commons license"
-    BY: "BY - Attribution"
-    SA: "SA - Share-alike"
-    NC: "NC - Non-commercial"
-    ND: "ND - No derivative works"
-    ZERO: "CC0 - No Copyright"
+    BY: "BY - Namensnennung"
+    SA: "SA - Weitergabe unter gleichen Bedingungen"
+    NC: "NC - Nicht kommerziell"
+    ND: "ND - Keine Bearbeitung"
+    ZERO: "CC0 - Kein Urheberrecht"
+
+aria:
+  theme_toggle: "Hell / Dunkel wechseln"
+  menu: "Hauptnavigation"
+  open_menu: "Menü öffnen"
+  backtotop: "Nach oben"
+  sidebar: "Notizverzeichnis"
+
+toc:
+  collapse: "Verzeichnis einklappen"
+  expand: "Verzeichnis ausklappen"
+  index_note: "Index-Notiz öffnen"

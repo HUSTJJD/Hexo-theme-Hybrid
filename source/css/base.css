@@ -8,6 +8,12 @@ html { scroll-behavior: smooth; }
 
 body {
 	margin: 0;
+	/* 撑满一屏并纵向排列：内容不够高时由 #content 吃掉剩余空间，
+	   页脚因此始终贴住视口底部，而不是跟着内容往上跑 */
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
 	background: var(--c-bg);
 	color: var(--c-text);
 	font-family: var(--font-sans);
@@ -106,13 +112,37 @@ body.backdrop-dots::before {
 	max-width: var(--maxw);
 	margin: 0 auto;
 	padding: 32px 24px 72px;
-	min-height: 60vh;
+	/* 吃掉 header 之外的全部剩余高度，把页脚压到底 */
+	flex: 1 0 auto;
+	width: 100%;
 }
 .mode-wiki #content { max-width: var(--maxw-prose); margin: 0 auto; }
 
 /* ------------------------------------------------------------
+   主题色：给分区 / 卡片 / chip 上色
+   用法：class="tone-violet"，内部用 var(--cat) / var(--cat-soft)
+   ------------------------------------------------------------ */
+.tone-violet { --cat: var(--c-violet); --cat-soft: var(--c-violet-soft); }
+.tone-amber  { --cat: var(--c-amber);  --cat-soft: var(--c-amber-soft); }
+.tone-blue   { --cat: var(--c-blue);   --cat-soft: var(--c-blue-soft); }
+.tone-green  { --cat: var(--c-green);  --cat-soft: var(--c-green-soft); }
+.tone-rose   { --cat: var(--c-rose);   --cat-soft: var(--c-rose-soft); }
+
+/* ------------------------------------------------------------
    通用排版
    ------------------------------------------------------------ */
+/* 页面大标题：分类 / 标签 / 归档 / 普通页共用 */
+.page-head { margin-bottom: 28px; }
+.page-title {
+	margin: 0; font-size: 28px; font-weight: 700; line-height: 1.3;
+	letter-spacing: -.01em;
+}
+.page-count {
+	margin-left: 10px; font-size: 14px; font-weight: 400;
+	color: var(--c-text-mute);
+}
+.page-desc { margin: 8px 0 0; font-size: 14px; color: var(--c-text-soft); }
+
 .section { margin-top: 56px; }
 
 .section-title {
@@ -250,6 +280,8 @@ body.backdrop-dots::before {
    页脚 / 回到顶部
    ------------------------------------------------------------ */
 #footer {
+	/* 不被压缩，配合 #content 的 flex-grow 把页脚顶到视口底部 */
+	flex: none;
 	border-top: 1px solid var(--c-border);
 	background: var(--c-bg-soft);
 }

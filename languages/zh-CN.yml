@@ -6,27 +6,32 @@ about:
 tag:
   title: "标签"
   postTotal: "目前共计 %d 个标签"
+  desc: "共 %d 个标签，按使用次数排序。"
 
 category:
   title: "分类"
   postTotal: "目前共计 %d 个分类"
+  desc: "共 %d 个主题分区、%d 篇笔记。按主题浏览，每个分区下挂着它的子分类。"
+  sub: "子分类"
+  posts: "笔记列表"
 
 archive:
   title: "归档"
 
 unit:
   post: "篇"
+  category: "分类"
+  tag: "标签"
 
-# 笔记区
 notes:
   title: "学习笔记"
   all: "全部笔记"
   desc: "共 %d 篇笔记，按目录组织，左侧树可展开浏览。"
-  list: "全部笔记"
+  list: "笔记流"
   recent: "最近更新"
   more: "全部笔记"
+  by_category: "按主题浏览"
 
-# 个人主页
 home:
   skills: "技能"
   experience: "工作经历"
@@ -39,6 +44,8 @@ search:
 footer:
   pv: "次访问"
   uv: "位访客"
+  powered: "由 %s 驱动"
+  theme: "主题 %s"
 
 post:
   words: "字"
@@ -58,3 +65,15 @@ post:
     NC: "NC - 非商业性使用"
     ND: "ND - 禁止演绎"
     ZERO: "CC0 - 无版权"
+
+aria:
+  theme_toggle: "切换深浅色"
+  menu: "主导航"
+  open_menu: "打开菜单"
+  backtotop: "回到顶部"
+  sidebar: "笔记目录"
+
+toc:
+  collapse: "收起目录"
+  expand: "展开目录"
+  index_note: "打开索引笔记"

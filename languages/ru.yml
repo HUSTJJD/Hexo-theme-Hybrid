@@ -1,32 +1,79 @@
 name: "Русский"
 
 about:
-  title: "О"
+  title: "О сайте"
 
 tag:
   title: "Теги"
   postTotal: "Всего текущих тегов: %d"
+  desc: "Всего %d тегов, отсортированы по частоте использования."
 
 category:
-  title: "Categories"
+  title: "Категории"
   postTotal: "Всего текущих категорий: %d"
+  desc: "%d разделов, %d заметок. Просмотр по темам, у каждого раздела есть свои подкатегории."
+  sub: "Подкатегории"
+  posts: "Заметки"
+
+archive:
+  title: "Архив"
+
+unit:
+  post: "записей"
+  category: "разделов"
+  tag: "тегов"
+
+notes:
+  title: "Заметки"
+  all: "Все заметки"
+  desc: "В дереве слева %d заметок — разверните, чтобы просмотреть."
+  list: "Хронология"
+  recent: "Недавно обновлено"
+  more: "Смотреть все"
+  by_category: "По темам"
+
+home:
+  skills: "Навыки"
+  experience: "Опыт работы"
+  education: "Образование"
+  enter: "Открыть заметки"
+
+search:
+  placeholder: "Фильтр дерева, Enter — поиск по сайту"
 
 footer:
   pv: "Просмотров"
   uv: "Посетителей"
-
-search:
-  placeholder: "Нажмите Enter, чтобы выполнить поиск по всему сайту"
+  powered: "Работает на %s"
+  theme: "Тема %s"
 
 post:
+  words: "слов"
+  prev: "Предыдущая"
+  next: "Следующая"
+  copy: "Копировать"
+  copied: "Скопировано"
   copyright:
     author: "Автор"
-    posted: "Опубликовано на"
+    posted: "Опубликовано"
     updated: "Обновлено"
-    license: "Лицензировано под"
-    CC: "CC - Creative Commons license"
-    BY: "BY - Attribution"
-    SA: "SA - Share-alike"
-    NC: "NC - Non-commercial"
-    ND: "ND - No derivative works"
-    ZERO: "CC0 - No Copyright"
+    licensed: "Лицензировано под"
+    link: "Ссылка"
+    CC: "CC - Лицензия Creative Commons"
+    BY: "BY - Атрибуция"
+    SA: "SA - Распространение на тех же условиях"
+    NC: "NC - Некоммерческое использование"
+    ND: "ND - Без производных произведений"
+    ZERO: "CC0 - Без авторских прав"
+
+aria:
+  theme_toggle: "Переключить светлую / тёмную тему"
+  menu: "Основная навигация"
+  open_menu: "Открыть меню"
+  backtotop: "Наверх"
+  sidebar: "Оглавление заметок"
+
+toc:
+  collapse: "Свернуть оглавление"
+  expand: "Развернуть оглавление"
+  index_note: "Открыть заметку-индекс"

@@ -1,30 +1,41 @@
 name: "English"
 
+# 所有语言的兜底：任何缺键都会回退到这里，新增语言只需补齐本文件的同构结构
+# 用法：__('notes.title')；带变量的用 %d / %s：__('notes.desc', site.posts.length)
+
 about:
   title: "About"
 
 tag:
   title: "Tags"
   postTotal: "Current %d tags in total"
+  desc: "%d tags in total, sorted by usage."
 
 category:
   title: "Categories"
   postTotal: "Current %d categories in total"
+  desc: "%d topics holding %d notes. Browse by topic, each one keeps its sub-categories."
+  sub: "Sub-categories"
+  posts: "Notes"
 
 archive:
   title: "Archives"
 
+# 计数单位，跟在数字后面
 unit:
   post: "posts"
+  category: "topics"
+  tag: "tags"
 
 # 笔记区
 notes:
   title: "Notes"
   all: "All notes"
   desc: "The tree on the left keeps %d notes, expand it to browse."
-  list: "All notes"
+  list: "Timeline"
   recent: "Recently updated"
   more: "Browse all"
+  by_category: "Browse by topic"
 
 # 个人主页
 home:
@@ -39,6 +50,8 @@ search:
 footer:
   pv: "views"
   uv: "visitors"
+  powered: "Powered by %s"
+  theme: "Theme %s"
 
 post:
   words: "words"
@@ -58,3 +71,17 @@ post:
     NC: "NC - Non-commercial"
     ND: "ND - No derivative works"
     ZERO: "CC0 - No Copyright"
+
+# 无障碍标签：aria-label / title
+aria:
+  theme_toggle: "Toggle light / dark"
+  menu: "Main navigation"
+  open_menu: "Open menu"
+  backtotop: "Back to top"
+  sidebar: "Notes tree"
+
+# 目录树
+toc:
+  collapse: "Collapse TOC"
+  expand: "Expand TOC"
+  index_note: "Open the index note"

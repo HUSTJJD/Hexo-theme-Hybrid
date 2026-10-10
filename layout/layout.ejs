@@ -42,10 +42,17 @@
 	<%- partial('_partial/footer') %>
 	<%- partial('_partial/backtotop') %>
 
+	<!-- 运行时配置：图表 / 公式 / 需要 JS 用到的文案 -->
 	<script>
 		window.__hybrid = {
 			mermaid: <%- JSON.stringify((theme.markdown && theme.markdown.mermaid) || {}) %>,
-			math: <%- JSON.stringify((theme.markdown && theme.markdown.math) || {}) %>
+			math: <%- JSON.stringify((theme.markdown && theme.markdown.math) || {}) %>,
+			i18n: {
+				copy: <%- JSON.stringify(__('post.copy')) %>,
+				copied: <%- JSON.stringify(__('post.copied')) %>,
+				collapse: <%- JSON.stringify(__('toc.collapse')) %>,
+				expand: <%- JSON.stringify(__('toc.expand')) %>
+			}
 		};
 	</script>
 

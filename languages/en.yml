@@ -6,24 +6,31 @@ about:
 tag:
   title: "Tags"
   postTotal: "Current %d tags in total"
+  desc: "%d tags in total, sorted by usage."
 
 category:
   title: "Categories"
   postTotal: "Current %d categories in total"
+  desc: "%d topics holding %d notes. Browse by topic, each one keeps its sub-categories."
+  sub: "Sub-categories"
+  posts: "Notes"
 
 archive:
   title: "Archives"
 
 unit:
   post: "posts"
+  category: "topics"
+  tag: "tags"
 
 notes:
   title: "Notes"
   all: "All notes"
   desc: "The tree on the left keeps %d notes, expand it to browse."
-  list: "All notes"
+  list: "Timeline"
   recent: "Recently updated"
   more: "Browse all"
+  by_category: "Browse by topic"
 
 home:
   skills: "Skills"
@@ -37,6 +44,8 @@ search:
 footer:
   pv: "views"
   uv: "visitors"
+  powered: "Powered by %s"
+  theme: "Theme %s"
 
 post:
   words: "words"
@@ -56,3 +65,15 @@ post:
     NC: "NC - Non-commercial"
     ND: "ND - No derivative works"
     ZERO: "CC0 - No Copyright"
+
+aria:
+  theme_toggle: "Toggle light / dark"
+  menu: "Main navigation"
+  open_menu: "Open menu"
+  backtotop: "Back to top"
+  sidebar: "Notes tree"
+
+toc:
+  collapse: "Collapse TOC"
+  expand: "Expand TOC"
+  index_note: "Open the index note"

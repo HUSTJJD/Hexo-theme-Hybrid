@@ -57,6 +57,10 @@ social:
     enable: false
     url: /atom.xml
     icon: rss
+  bilibili:
+    enable: false
+    url: ''
+    icon: television
 
 #------------------------------------------------------
 # 外观
@@ -84,38 +88,44 @@ sidebar:
     engine: https://www.google.com/search?q=
 
 #------------------------------------------------------
+# 分类主题分区
+# ------------------------------------------------------
+# 只需要登记「一级分类」：中文名、一句话描述、图标、配色。
+# 二级分类（Unreal Engine/GamePlay 里的 GamePlay）由 _posts 的目录层级
+# 自动推导，不需要手写，也不会和一级分类混在同一个列表里。
+# 配色可选：violet | amber | blue | green | rose
+#------------------------------------------------------
+categories:
+  - key: LLM
+    name: LLM / 大模型
+    desc: 大模型原理、训练与 Agent 工程化
+    icon: brain
+    color: violet
+  - key: 'Unreal Engine'
+    name: Unreal Engine
+    desc: Gameplay、GAS、动画与网络同步
+    icon: gamepad
+    color: amber
+  - key: Programing
+    name: 编程
+    desc: C/C++、Python 与工程实践
+    icon: code
+    color: blue
+  - key: Base Knowledge
+    name: 基础知识
+    desc: 图形学、数学与计算机基础
+    icon: book
+    color: green
+  - key: Work Experience
+    name: 工作经验
+    desc: 项目复盘与工程方法论
+    icon: briefcase
+    color: rose
+
+#------------------------------------------------------
 # 笔记入口 /notes/
 #------------------------------------------------------
 notes:
-  # 分类卡片：key 为分类名（与 _posts 目录 / categories 一致）
-  # 未列出的分类仍会出现在列表中，但不会有卡片
-  categories:
-    - key: LLM
-      name: LLM / 大模型
-      desc: 大模型原理、训练与 Agent 工程化
-      icon: brain
-      color: violet
-    - key: 'Unreal Engine'
-      name: Unreal Engine
-      desc: Gameplay、GAS、动画与网络同步
-      icon: gamepad
-      color: amber
-    - key: Programing
-      name: 编程
-      desc: C/C++、Python 与工程实践
-      icon: code
-      color: blue
-    - key: Base Knowledge
-      name: 基础知识
-      desc: 图形学、数学与计算机基础
-      icon: book
-      color: green
-    - key: Work Experience
-      name: 工作经验
-      desc: 项目复盘与工程方法论
-      icon: briefcase
-      color: rose
-  # 列表中每页显示条数（由 _config.yml 的 per_page 覆盖）
   # 首页「最近更新」取多少条
   recent_count: 6
 
@@ -138,6 +148,22 @@ markdown:
     enable: true
     # 需与渲染时使用的 katex 版本一致，否则类名对不上
     version: '0.16.11'
+
+#------------------------------------------------------
+# 增强 Markdown：内嵌媒体
+#------------------------------------------------------
+plugins:
+  # B 站视频：{% bilibili BV1xx411c7mD %} 或 {% bilibili av170001 p:2 %}
+  bilibili:
+    enable: true
+    # 默认分 P，可在标签里用 p:2 覆盖
+    page: 1
+    # 是否默认开弹幕：true 开、false 关
+    danmaku: false
+    # 画面比例：16/9 或 4/3
+    ratio: '16/9'
+    # 是否默认高清
+    high_quality: true
 
 #------------------------------------------------------
 # 代码块

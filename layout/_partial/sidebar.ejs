@@ -1,7 +1,7 @@
 <!-- 开合按钮在文件末尾、#sidebar 之外：#sidebar.is-collapsed 会加 transform，
      而带 transform 的元素会成为内部 position:fixed 子元素的包含块，
      按钮会被一起移出屏幕，变成「能收起、没法展开」 -->
-<aside id="sidebar" aria-label="笔记目录">
+<aside id="sidebar" aria-label="<%= __('aria.sidebar') %>">
 	<div id="site-toc">
 		<a class="toc-home" href="<%= url_for('/notes/') %>">
 			<i class="fa fa-sitemap" aria-hidden="true"></i>
@@ -148,7 +148,7 @@
 									<div class="article-toc" style="display: none;"></div>
 			<% 						if(hasIndex && indexUrl){ %>
 										<%# 目录行只负责展开/折叠，索引笔记通过这个入口打开 %>
-										<a class="dir-index" href="<%- indexUrl %>" title="打开索引笔记" aria-label="打开索引笔记">
+										<a class="dir-index" href="<%- indexUrl %>" title="<%= __('toc.index_note') %>" aria-label="<%= __('toc.index_note') %>">
 											<i class="fa fa-file-text-o" aria-hidden="true"></i>
 										</a>
 			<% 						} %>
@@ -166,6 +166,6 @@
 	</div>
 </aside>
 
-<button id="sidebar-toggle" class="toggle" type="button" aria-label="收起目录" title="收起目录">
+<button id="sidebar-toggle" class="toggle" type="button" aria-label="<%= __('toc.collapse') %>" title="<%= __('toc.collapse') %>">
 	<i class="fa fa-arrow-right" aria-hidden="true"></i>
 </button>

@@ -1,40 +1,44 @@
 <%
-	// 分类名 -> 分类对象，用于卡片计数
-	const catMap = {};
-	site.categories.forEach(function(c){ catMap[c.name] = c; });
-
-	const cards = (theme.notes.categories || []).map(function(cfg){
-		const cat = catMap[cfg.key];
-		return {
-			cfg: cfg,
-			count: cat ? cat.posts.length : 0,
-			url: cat ? url_for(cat.path) : url_for('/categories/')
-		};
-	});
+	// /notes/ 只负责「时间视角」：一条按更新时间倒序的全量笔记流。
+	// 分类在这里只是导航入口（chip 行），完整的「分类 -> 文章」地图在 /categories/，
+	// 精选的几条在首页 —— 三处各司其职，不再互相抄一遍。
+	const groups = cat_groups();
 %>
-<div id="index" class="notes-index">
+
+<div class="notes-index">
 
 	<header class="notes-head">
 		<h1 class="notes-title"><%= __('notes.title') %></h1>
 		<p class="notes-desc"><%= __('notes.desc', site.posts.length) %></p>
+
+		<ul class="notes-stats">
+			<li><b><%= site.posts.length %></b><span><%= __('unit.post') %></span></li>
+			<li><b><%= groups.length %></b><span><%= __('unit.category') %></span></li>
+			<li><b><%= site.tags.length %></b><span><%= __('unit.tag') %></span></li>
+		</ul>
 	</header>
 
-	<% if (cards.length){ %>
-		<div class="cat-grid">
-			<% cards.forEach(function(c){ %>
-				<a class="cat-card cat-card-<%= c.cfg.color || 'blue' %>" href="<%= c.url %>">
-					<div class="cat-card-top">
-						<i class="fa fa-<%= c.cfg.icon || 'folder' %>" aria-hidden="true"></i>
-						<span class="cat-card-count"><%= c.count %></span>
-					</div>
-					<div class="cat-card-name"><%= c.cfg.name || c.cfg.key %></div>
-					<p class="cat-card-desc"><%= c.cfg.desc || '' %></p>
+	<% if (groups.length){ %>
+		<nav class="cat-nav" aria-label="<%= __('category.title') %>">
+			<a class="cat-nav-item cat-nav-all" href="<%= url_for('/categories/') %>">
+				<i class="fa fa-th-large" aria-hidden="true"></i>
+				<span><%= __('notes.by_category') %></span>
+				<i class="fa fa-angle-right" aria-hidden="true"></i>
+			</a>
+			<% groups.forEach(function(g){ %>
+				<a class="cat-nav-item tone-<%= g.color %>" href="<%= url_for(g.cat.path) %>">
+					<i class="fa fa-<%= g.icon %>" aria-hidden="true"></i>
+					<span><%= g.name %></span>
+					<em><%= g.count %></em>
 				</a>
 			<% }); %>
-		</div>
+		</nav>
 	<% } %>
 
-	<h2 class="notes-subtitle"><%= __('notes.list') %></h2>
+	<h2 class="notes-subtitle">
+		<%= __('notes.list') %>
+		<span class="notes-subtitle-count"><%= site.posts.length %></span>
+	</h2>
 
 	<div class="post-list">
 		<% page.posts.each(function(post){
@@ -48,7 +52,7 @@
 				</div>
 				<div class="post-item-meta">
 					<% if (cat){ %><span class="chip chip-soft"><%= cat %></span><% } %>
-					<time><%= date(post.date, 'YYYY-MM-DD') %></time>
+					<time><%= date(post.updated || post.date, 'YYYY-MM-DD') %></time>
 				</div>
 			</a>
 		<% }); %>

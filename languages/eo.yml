@@ -6,27 +6,74 @@ about:
 tag:
   title: "Etikedoj"
   postTotal: "Nunaj %d etikedoj entute"
+  desc: "Entute %d etikedoj, ordigitaj laŭ uz ofteco."
 
 category:
-  title: "Kategorio"
+  title: "Kategorioj"
   postTotal: "Nunaj %d kategorioj entute"
+  desc: "%d temoj kun %d notoj. Foliumu laŭ temo, ĉiu enhavas siajn subkategoriojn."
+  sub: "Subkategorioj"
+  posts: "Notoj"
+
+archive:
+  title: "Arkivo"
+
+unit:
+  post: "notoj"
+  category: "temoj"
+  tag: "etikedoj"
+
+notes:
+  title: "Notoj"
+  all: "Ĉiuj notoj"
+  desc: "La arbo maldekstre enhavas %d notojn, malfermu ĝin por foliumi."
+  list: "Kroniko"
+  recent: "Lastatempe ĝisdatigitaj"
+  more: "Vidi ĉiujn"
+  by_category: "Foliumi laŭ temo"
+
+home:
+  skills: "Kapabloj"
+  experience: "Sperto"
+  education: "Eduko"
+  enter: "Vidi notojn"
+
+search:
+  placeholder: "Filtri la arbon, premu Enen por serĉi la tutan retejon"
 
 footer:
   pv: "Vidoj"
   uv: "Visitoj"
-
-search:
-  placeholder: "Premu Enen por serĉi la tutan retejon"
+  powered: "Funkcias per %s"
+  theme: "Temo %s"
 
 post:
+  words: "vortoj"
+  prev: "Antaŭa"
+  next: "Sekva"
+  copy: "Kopii"
+  copied: "Kopiita"
   copyright:
     author: "Aŭtoro"
-    posted: "Postigita"
+    posted: "Afisiĝis"
     updated: "Aktualizita"
-    licensed: "Lizenta"
-    CC: "CC - Creative Commons license"
-    BY: "BY - Attribution"
-    SA: "SA - Share-alike"
-    NC: "NC - Non-commercial"
-    ND: "ND - No derivative works"
-    ZERO: "CC0 - No Copyright"
+    licensed: "Licenco sub"
+    link: "Ligilo"
+    CC: "CC - Permesilo Creative Commons"
+    BY: "BY - Atribuo"
+    SA: "SA - Kunhavu egale"
+    NC: "NC - Nekomerca"
+    ND: "ND - Sen derivaĵoj"
+    ZERO: "CC0 - Sen kopirajto"
+
+aria:
+  theme_toggle: "Ŝalti helan / malhelan"
+  menu: "Ĉefa navigado"
+  open_menu: "Malfermi menuon"
+  backtotop: "Reen supren"
+  sidebar: "Nota indekso"
+
+toc:
+  collapse: "Maletendi indekson"
+  expand: "Etendi indekson"
+  index_note: "Malfermi la indeksan noton"

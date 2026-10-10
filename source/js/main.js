@@ -10,6 +10,13 @@
 	const $ = (sel, root) => (root || document).querySelector(sel);
 	const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
+	// 文案由模板注入（见 layout.ejs 的 window.__hybrid.i18n），
+	// 取不到时按页面语言回退，保证主题在没有对应语言文件时也不会露出空白按钮
+	const I18N = (window.__hybrid && window.__hybrid.i18n) || {};
+	const isZh = (document.documentElement.lang || '').toLowerCase().indexOf('zh') === 0;
+	const t = (key, fallbackZh, fallbackEn) =>
+		I18N[key] || (isZh ? fallbackZh : fallbackEn);
+
 	/* ---------------------------------------------------------
 	   深浅色：auto 跟随系统，手动切换写入 localStorage
 	   --------------------------------------------------------- */
@@ -112,7 +119,8 @@
 				icon.classList.toggle('fa-arrow-right', collapsed);
 				icon.classList.toggle('fa-arrow-left', !collapsed);
 			}
-			const label = collapsed ? '展开目录' : '收起目录';
+			// 按钮说的是「点了会发生什么」，所以展开态显示「收起」
+			const label = collapsed ? t('expand', '展开目录', 'Expand TOC') : t('collapse', '收起目录', 'Collapse TOC');
 			toggle.setAttribute('aria-label', label);
 			toggle.setAttribute('title', label);
 		};
@@ -493,9 +501,11 @@
 	   代码块复制
 	   --------------------------------------------------------- */
 	function initCodeCopy() {
-		// 复制按钮文案跟随站点语言，避免主题里硬编码中文
-		const isZh = (document.documentElement.lang || '').toLowerCase().indexOf('zh') === 0;
-		const TXT = { copy: isZh ? '复制' : 'Copy', copied: isZh ? '已复制' : 'Copied' };
+		// 文案来自主题语言文件，不再在 JS 里硬编码
+		const TXT = {
+			copy: t('copy', '复制', 'Copy'),
+			copied: t('copied', '已复制', 'Copied')
+		};
 
 		$$('#article-content pre').forEach(pre => {
 			const btn = document.createElement('button');

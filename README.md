@@ -13,9 +13,11 @@
 - **原生暗色模式** —— CSS 变量实现，默认跟随系统，可手动切换并记忆，无第三方依赖
 - **文章内目录（TOC）** —— 自动生成、滚动高亮，不依赖渲染器的锚点实现
 - **响应式** —— 宽屏侧栏常驻并可收起，窄屏变抽屉
-- **多语言** —— 内置 10 种语言文件，缺键回退到 `default.yml`
+- **多语言** —— 内置 10 种语言文件，界面文案（含 aria 标签、JS 文案）全部走 i18n，缺键回退到 `default.yml`
 - **增强 Markdown** —— Mermaid 图表、KaTeX 公式、提示块、任务列表、脚注、emoji、上下标、缩写，
   全部交给成熟库渲染，主题只负责按需引入运行时与样式
+- **B 站视频嵌入** —— 内置 `{% bilibili %}` 标签，BV / av 号、分 P、弹幕、比例都可调
+- **分类只在一处展开** —— `/categories/` 是唯一的「主题 -> 文章」地图，`/notes/` 走时间线，首页只看精选
 
 ## Installation
 
@@ -111,9 +113,30 @@ _posts
     └── foo.md      # 与目录同名的文件，作为该节点的落地页
 ```
 
-笔记入口 `/notes/` 顶部会渲染分类卡片，配色与图标在主题配置的 `notes.categories` 里定义。
+### 3. 分类与笔记的分工
 
-### 3. 页面模式
+同一个内容不在三个地方各列一遍，三个入口各管一个视角：
+
+| 入口 | 视角 | 内容 |
+| --- | --- | --- |
+| `/` | 精选 | 最近更新的几篇 + 个人名片 |
+| `/notes/` | 时间 | 全量笔记流（按更新时间倒序，分页），顶部只有分类导航条 |
+| `/categories/` | 主题 | 一级分区 -> 二级分类 -> 每个分区最新几篇 |
+
+一级分类的中文名、描述、图标、配色写在主题配置的 `categories` 里（只需登记一级）：
+
+```yaml
+categories:
+  - key: LLM
+    name: LLM / 大模型
+    desc: 大模型原理、训练与 Agent 工程化
+    icon: brain
+    color: violet     # violet | amber | blue | green | rose
+```
+
+二级分类由 `_posts` 的目录层级自动推导，不需要登记，配色会沿用所属的一级分类。
+
+### 4. 页面模式
 
 | `layout` | 形态 | 侧边栏 |
 | --- | --- | --- |
@@ -128,13 +151,13 @@ _posts
 wiki: true     # 强制带目录树
 ```
 
-### 4. 配置
+### 5. 配置
 
 站点根目录建 `_config.hybrid.yml` 覆盖主题默认值，不要直接改主题目录（尤其用 submodule 时）。
 可配置项见 [`_config.yml`](_config.yml)：导航菜单、社交图标、外观、
-分类卡片、代码高亮、版权、页脚统计、giscus 评论、百度/谷歌统计、自定义 CSS/JS。
+分类分区、代码高亮、版权、页脚统计、giscus 评论、百度/谷歌统计、自定义 CSS/JS。
 
-### 5. 增强 Markdown
+### 6. 增强 Markdown
 
 这些能力来自 markdown-it 插件（构建期渲染），主题负责呈现与按需加载运行时。
 需要站点先安装依赖：
@@ -213,6 +236,81 @@ prismjs:
 prism 有 597 个语言组件（含 `hlsl`、`wgsl`、`unrealscript`、`glsl`），
 且 hexo 会按需加载对应组件，新增语言无需改配置。
 highlight.js 只有 192 种且缺少 hlsl / wgsl。
+
+### 7. 内嵌 B 站视频
+
+主题自带 `{% bilibili %}` 标签（简写 `{% bili %}`），不需要额外装插件，正文里前后留空行即可：
+
+```markdown
+{% bilibili BV1xx411c7mD %}
+
+{% bilibili BV1xx411c7mD 2 %}                    # 第 2 分 P
+
+{% bilibili av170001 %}
+
+{% bilibili BV1xx411c7mD p:2 danmaku:1 ratio:4:3 title:这一节讲的是 GAS %}
+
+{% bilibili https://www.bilibili.com/video/BV1xx411c7mD %}
+```
+
+| 参数 | 说明 | 默认 |
+| --- | --- | --- |
+| `p` / `page` | 分 P，也可以直接写第二个裸数字 | `1` |
+| `danmaku` | `1` 开弹幕、`0` 关 | `0` |
+| `ratio` | `16/9` 或 `4/3` | `16/9` |
+| `hd` | 是否高清 | `1` |
+| `title` | 播放器下方显示的文字 | 「在 B 站观看」 |
+
+默认值可以在主题配置里改，播放器会按 `ratio` 自适应并保持比例，图片懒加载：
+
+```yaml
+plugins:
+  bilibili:
+    enable: true
+    page: 1
+    danmaku: false
+    ratio: '16/9'
+    high_quality: true
+```
+
+### 8. 多语言
+
+切换语言只改站点配置：
+
+```yaml
+language: zh-CN
+```
+
+内置语言：`zh-CN`（简体）、`zh-TW`（正體）、`zh-HK`（繁體）、`en` / `default`（English）、
+`ja`（日本語）、`de`（Deutsch）、`es`（Español）、`ru`（Русский）、`eo`（Esperanto）。
+
+词条分这些组，命名即用途：
+
+| 组 | 覆盖 |
+| --- | --- |
+| `home` / `notes` / `about` | 个人主页与笔记区 |
+| `category` / `tag` / `archive` | 分类、标签、归档页 |
+| `unit` | 计数单位（篇 / 分類 / tags…），跟在数字后面 |
+| `search` / `footer` | 搜索框占位、页脚统计与署名 |
+| `post` | 正文字数、上下篇、复制按钮、版权 |
+| `aria` | `aria-label` / `title`，读屏器与 tooltip |
+| `toc` | 目录树：收起 / 展开 / 打开索引笔记 |
+
+规则：
+
+- **缺键回退** —— 每种语言只需覆盖自己有的键，其余自动用 `default.yml`（English）
+- **变量用 `%d` / `%s`** —— 例如 `__('notes.desc', site.posts.length)`；带链接的用 `<%- __('footer.powered', '<a …>Hexo</a>') %>`
+- **JS 里的文案** —— 由 `layout.ejs` 注入到 `window.__hybrid.i18n`（`copy` / `copied` / `collapse` / `expand`），
+  `js/main.js` 读它，取不到时按 `<html lang>` 回退，所以新增语言不用改 JS
+- **日期** —— Hexo 的 `date()` 已按 `language` 设置 moment locale，`'LL'` 这类本地化格式会自动变成「2026年10月10日」
+
+新增一种语言：复制 `languages/default.yml`，改名为 `<语言代码>.yml`（如 `fr.yml`），翻译后放在 `languages/` 下即可，
+不需要注册。
+
+已知不随语言切换的两处：
+
+- `source/404.html` 是静态页（Hexo 直接拷贝，不走模板引擎），文案保持英文
+- 顶栏菜单的文字写在站点配置 `menu` 里，属于站点内容，需要哪种语言就写哪种
 
 ## 与 Node-Tree 的差异
 

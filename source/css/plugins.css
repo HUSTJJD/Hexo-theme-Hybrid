@@ -1,0 +1,54 @@
+/* ============================================================
+   plugins：内嵌媒体等「标签插件」的样式
+   只在这些标签真的出现在页面里时才有 DOM，样式本身很轻，
+   因此始终随页面加载，不做按需懒加载。
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Bilibili：{% bilibili BV1xx411c7mD %}
+   16:9（或 4:3）的自适应播放器，比例由标签的 ratio 参数写入
+   ------------------------------------------------------------ */
+.bili-embed { margin: 1.6em 0; }
+
+.bili-player {
+	position: relative;
+	width: 100%;
+	aspect-ratio: var(--bili-ratio, 16 / 9);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius);
+	overflow: hidden;
+	background: var(--c-surface-2);
+	box-shadow: var(--shadow-sm);
+}
+/* 老浏览器没有 aspect-ratio 时的兜底 */
+@supports not (aspect-ratio: 16 / 9) {
+	.bili-player { height: 0; padding-bottom: 56.25%; }
+}
+
+.bili-player iframe {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%; height: 100%;
+	border: 0;
+}
+
+.bili-meta {
+	margin-top: 8px;
+	font-size: 13px;
+	color: var(--c-text-mute);
+}
+.bili-meta a { color: var(--c-text-mute); }
+.bili-meta a:hover { color: var(--c-accent); }
+.bili-meta i { margin-right: 4px; }
+
+/* 标签写法有误 / 插件被关闭时的退化样式 */
+.bili-error {
+	padding: 10px 14px;
+	border: 1px dashed var(--c-rose);
+	border-radius: var(--radius-sm);
+	background: var(--c-rose-soft);
+	color: var(--c-rose);
+	font-size: 13.5px;
+}
+.bili-link { color: var(--c-accent); text-decoration: underline; text-underline-offset: 2px; }

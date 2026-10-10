@@ -27,7 +27,7 @@
 	<%- css('css/home.css') %>
 	<%- css('css/wiki.css') %>
 	<%- css('css/markdown.css') %>
-	<%- css('css/markdown.css') %>
+	<%- css('css/plugins.css') %>
 
 	<!-- 数学公式（KaTeX）：只在启用时加载 -->
 	<% if (theme.markdown && theme.markdown.katex && theme.markdown.katex.enable){ %>
@@ -52,17 +52,6 @@
 			<%- js(item) %>
 		<% }); %>
 	<% } %>
-
-	<!-- 主题运行时配置，供 js/main.js 读取 -->
-	<script>
-		window.__hybrid = {
-			mermaid: {
-				enable: <%= !!(theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.enable) %>,
-				version: '<%= (theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.version) || "12.1.0" %>',
-				theme: '<%= (theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.theme) || "default" %>'
-			}
-		};
-	</script>
 
 	<!-- 分析 -->
 	<% if (theme.analytics.baidu.enable && theme.analytics.baidu.hm){ %>

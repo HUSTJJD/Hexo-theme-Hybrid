@@ -6,27 +6,74 @@ about:
 tag:
   title: "標籤"
   postTotal: "目前共計 %d 個標籤"
+  desc: "共 %d 個標籤，按使用次數排序。"
 
 category:
   title: "分類"
   postTotal: "目前共計 %d 個分類"
+  desc: "共 %d 個主題分區、%d 篇筆記。按主題瀏覽，每個分區下掛著它的子分類。"
+  sub: "子分類"
+  posts: "筆記列表"
 
-footer:
-  pv: "總訪問量"
-  uv: "總訪客數"
+archive:
+  title: "歸檔"
+
+unit:
+  post: "篇"
+  category: "分類"
+  tag: "標籤"
+
+notes:
+  title: "學習筆記"
+  all: "全部筆記"
+  desc: "共 %d 篇筆記，按目錄組織，左側樹可展開瀏覽。"
+  list: "筆記流"
+  recent: "最近更新"
+  more: "全部筆記"
+  by_category: "按主題瀏覽"
+
+home:
+  skills: "技能"
+  experience: "工作經歷"
+  education: "教育經歷"
+  enter: "進入筆記"
 
 search:
-  placeholder: "按回車全站搜尋"
+  placeholder: "過濾目錄，按 Enter 全站搜尋"
+
+footer:
+  pv: "次訪問"
+  uv: "位訪客"
+  powered: "由 %s 驅動"
+  theme: "主題 %s"
 
 post:
+  words: "字"
+  prev: "上一篇"
+  next: "下一篇"
+  copy: "複製"
+  copied: "已複製"
   copyright:
     author: "作者"
     posted: "發布於"
     updated: "更新於"
     licensed: "許可協議"
+    link: "本文連結"
     CC: "CC - 知識共享許可協議"
     BY: "BY - 署名"
     SA: "SA - 相同方式共享"
     NC: "NC - 非商業性使用"
     ND: "ND - 禁止演繹"
     ZERO: "CC0 - 無著作權"
+
+aria:
+  theme_toggle: "切換深淺色"
+  menu: "主導航"
+  open_menu: "打開選單"
+  backtotop: "回到頂部"
+  sidebar: "筆記目錄"
+
+toc:
+  collapse: "收起目錄"
+  expand: "展開目錄"
+  index_note: "打開索引筆記"

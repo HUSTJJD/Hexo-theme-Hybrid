@@ -6,27 +6,74 @@ about:
 tag:
   title: "タグ"
   postTotal: "現在の合計 %d 個のタグ"
+  desc: "全 %d 個のタグ、使用回数の多い順に並べています。"
 
 category:
   title: "カテゴリ"
   postTotal: "現在の合計 %d カテゴリ"
+  desc: "%d つのトピックに %d 件のノート。トピックごとにサブカテゴリがぶら下がります。"
+  sub: "サブカテゴリ"
+  posts: "ノート一覧"
+
+archive:
+  title: "アーカイブ"
+
+unit:
+  post: "件"
+  category: "トピック"
+  tag: "タグ"
+
+notes:
+  title: "ノート"
+  all: "すべてのノート"
+  desc: "左のツリーに %d 件のノートがあります。展開して閲覧してください。"
+  list: "タイムライン"
+  recent: "最近の更新"
+  more: "すべて見る"
+  by_category: "トピック別に見る"
+
+home:
+  skills: "スキル"
+  experience: "職務経歴"
+  education: "学歴"
+  enter: "ノートを見る"
+
+search:
+  placeholder: "ツリーを絞り込み、Enter でサイト内検索"
 
 footer:
   pv: "閲覧合計数"
   uv: "合計閲覧者数"
-
-search:
-  placeholder: "Enter キーを押してサイト全体を検索します"
+  powered: "Powered by %s"
+  theme: "テーマ %s"
 
 post:
+  words: "文字"
+  prev: "前の記事"
+  next: "次の記事"
+  copy: "コピー"
+  copied: "コピーしました"
   copyright:
     author: "著者"
     posted: "作成日"
     updated: "修正日"
     licensed: "著作権"
+    link: "リンク"
     CC: "CC - Creative Commons license"
-    BY: "BY - Attribution"
-    SA: "SA - Share-alike"
-    NC: "NC - Non-commercial"
-    ND: "ND - No derivative works"
-    ZERO: "CC0 - No Copyright"
+    BY: "BY - 帰属"
+    SA: "SA - 継承"
+    NC: "NC - 非営利"
+    ND: "ND - 改変禁止"
+    ZERO: "CC0 - 著作権放棄"
+
+aria:
+  theme_toggle: "明暗を切り替え"
+  menu: "メインナビゲーション"
+  open_menu: "メニューを開く"
+  backtotop: "トップへ戻る"
+  sidebar: "ノートの目次"
+
+toc:
+  collapse: "目次を閉じる"
+  expand: "目次を開く"
+  index_note: "索引ノートを開く"

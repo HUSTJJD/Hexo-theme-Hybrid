@@ -128,40 +128,6 @@
 	font-size: 12px; color: var(--c-text-mute); margin-top: auto;
 }
 
-/* ------------------------------------------------------------
-   分类卡片（笔记入口）
-   ------------------------------------------------------------ */
-.cat-grid {
-	display: grid; gap: 14px;
-	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-}
-.cat-card {
-	--cat: var(--c-blue);
-	--cat-soft: var(--c-blue-soft);
-	display: block; padding: 18px;
-	background: var(--c-surface);
-	border: 1px solid var(--c-border); border-radius: var(--radius);
-	transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-}
-.cat-card:hover {
-	border-color: var(--cat); transform: translateY(-3px); box-shadow: var(--shadow);
-}
-.cat-card-violet { --cat: var(--c-violet); --cat-soft: var(--c-violet-soft); }
-.cat-card-amber  { --cat: var(--c-amber);  --cat-soft: var(--c-amber-soft); }
-.cat-card-blue   { --cat: var(--c-blue);   --cat-soft: var(--c-blue-soft); }
-.cat-card-green  { --cat: var(--c-green);  --cat-soft: var(--c-green-soft); }
-.cat-card-rose   { --cat: var(--c-rose);   --cat-soft: var(--c-rose-soft); }
-
-.cat-card-top { display: flex; align-items: center; justify-content: space-between; }
-.cat-card-top i {
-	width: 34px; height: 34px; border-radius: 10px;
-	display: inline-flex; align-items: center; justify-content: center;
-	background: var(--cat-soft); color: var(--cat); font-size: 15px;
-}
-.cat-card-count { font-size: 12px; color: var(--c-text-mute); }
-.cat-card-name { margin-top: 12px; font-weight: 650; font-size: 15px; }
-.cat-card-desc { margin: 4px 0 0; font-size: 13px; color: var(--c-text-mute); }
-
 @media (max-width: 860px) {
 	.hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px 22px; }
 	.hero-name { font-size: 27px; }
