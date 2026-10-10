@@ -1,0 +1,47 @@
+<%
+	// 页面模式：决定顶栏/侧边栏/内容容器的组合方式
+	//   home -> 个人主页，全宽，无侧边栏
+	//   wiki -> 笔记区，带目录树侧边栏
+	//   page -> 常规页面，全宽，无侧边栏
+	// 生成器产出的页面（index / category / tag / archive）layout 不一定有值，
+	// 因此额外用 __index、is_home() 兜底；页面也可在 front-matter 写 wiki: true 强制开启。
+	var mode = 'page';
+	if (page.layout === 'home' || page.layout === 'landing') {
+		mode = 'home';
+	} else if (
+		page.wiki === true ||
+		page.layout === 'notes' ||
+		page.layout === 'index' ||
+		page.layout === 'category' ||
+		page.layout === 'tag' ||
+		page.layout === 'archive' ||
+		page.__index === true ||
+		is_home() ||
+		is_post()
+	) {
+		mode = 'wiki';
+	}
+%>
+<!DOCTYPE html>
+<html lang="<%= config.language %>" data-scheme="<%= theme.appearance.color_scheme %>">
+
+<%- partial('_partial/head') %>
+
+<body class="mode-<%= mode %> backdrop-<%= theme.appearance.backdrop %>">
+
+	<%- partial('_partial/header') %>
+
+	<% if (mode === 'wiki') { %>
+		<%- partial('_partial/sidebar') %>
+	<% } %>
+
+	<main id="content" class="content-<%= mode %>">
+		<%- body %>
+	</main>
+
+	<%- partial('_partial/footer') %>
+	<%- partial('_partial/backtotop') %>
+
+	<%- js('js/main.js') %>
+</body>
+</html>

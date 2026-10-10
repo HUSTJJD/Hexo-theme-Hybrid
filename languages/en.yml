@@ -1,0 +1,58 @@
+name: "English"
+
+about:
+  title: "About"
+
+tag:
+  title: "Tags"
+  postTotal: "Current %d tags in total"
+
+category:
+  title: "Categories"
+  postTotal: "Current %d categories in total"
+
+archive:
+  title: "Archives"
+
+unit:
+  post: "posts"
+
+notes:
+  title: "Notes"
+  all: "All notes"
+  desc: "The tree on the left keeps %d notes, expand it to browse."
+  list: "All notes"
+  recent: "Recently updated"
+  more: "Browse all"
+
+home:
+  skills: "Skills"
+  experience: "Experience"
+  education: "Education"
+  enter: "Browse notes"
+
+search:
+  placeholder: "Filter the tree, press Enter to search"
+
+footer:
+  pv: "views"
+  uv: "visitors"
+
+post:
+  words: "words"
+  prev: "Previous"
+  next: "Next"
+  copy: "Copy"
+  copied: "Copied"
+  copyright:
+    author: "Author"
+    posted: "Posted on"
+    updated: "Updated on"
+    licensed: "Licensed under"
+    link: "Link"
+    CC: "CC - Creative Commons license"
+    BY: "BY - Attribution"
+    SA: "SA - Share-alike"
+    NC: "NC - Non-commercial"
+    ND: "ND - No derivative works"
+    ZERO: "CC0 - No Copyright"

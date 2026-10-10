@@ -1,0 +1,30 @@
+<% if (theme.post.copyright.enable){ %>
+	<div class="post-copyright">
+		<div class="copyright-row">
+			<i class="fa fa-creative-commons" aria-hidden="true"></i>
+			<span><%= __('post.copyright.licensed') %>：CC <%= theme.post.copyright.license %></span>
+		</div>
+		<% if (theme.post.copyright.author.enable){ %>
+			<div class="copyright-row">
+				<i class="fa fa-user" aria-hidden="true"></i>
+				<span><%= __('post.copyright.author') %>：<%= config.author %></span>
+			</div>
+		<% } %>
+		<div class="copyright-row">
+			<i class="fa fa-link" aria-hidden="true"></i>
+			<span><%= __('post.copyright.link') %>：<%= page.permalink %></span>
+		</div>
+		<% if (theme.post.copyright.postDate.enable){ %>
+			<div class="copyright-row">
+				<i class="fa fa-calendar" aria-hidden="true"></i>
+				<span><%= __('post.copyright.posted') %>：<%= date(page.date, theme.post.copyright.postDate.format || 'YYYY-MM-DD') %></span>
+			</div>
+		<% } %>
+		<% if (theme.post.copyright.updateDate.enable){ %>
+			<div class="copyright-row">
+				<i class="fa fa-history" aria-hidden="true"></i>
+				<span><%= __('post.copyright.updated') %>：<%= date(page.updated || page.date, theme.post.copyright.updateDate.format || 'YYYY-MM-DD') %></span>
+			</div>
+		<% } %>
+	</div>
+<% } %>

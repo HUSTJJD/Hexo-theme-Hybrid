@@ -1,0 +1,28 @@
+<%
+	const posts = page.posts || site.posts;
+	const byYear = {};
+	posts.forEach(function(post){
+		const y = date(post.date, 'YYYY');
+		(byYear[y] = byYear[y] || []).push(post);
+	});
+	const years = Object.keys(byYear).sort().reverse();
+%>
+<div class="page">
+	<h1 class="page-title"><%= __('archive.title') %> <span class="page-count"><%= posts.length %> <%= __('unit.post') %></span></h1>
+
+	<% years.forEach(function(y){ %>
+		<section class="archive-year">
+			<h2 class="archive-year-title"><%= y %></h2>
+			<div class="post-list">
+				<% byYear[y].forEach(function(post){ %>
+					<a class="post-item" href="<%= url_for(post.path) %>">
+						<div class="post-item-main">
+							<div class="post-item-title"><%= post.title %></div>
+						</div>
+						<div class="post-item-meta"><time><%= date(post.date, 'MM-DD') %></time></div>
+					</a>
+				<% }); %>
+			</div>
+		</section>
+	<% }); %>
+</div>

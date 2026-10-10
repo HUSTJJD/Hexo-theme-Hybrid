@@ -1,0 +1,20 @@
+<% const g = theme.comment.giscus || {}; %>
+<% if (g.enable && g.repo){ %>
+	<div class="post-comment">
+		<script src="https://giscus.app/client.js"
+			data-repo="<%= g.repo %>"
+			data-repo-id="<%= g.repo_id %>"
+			data-category="<%= g.category %>"
+			data-category-id="<%= g.category_id %>"
+			data-mapping="<%= g.mapping || 'pathname' %>"
+			data-strict="<%= g.strict %>"
+			data-reactions-enabled="<%= g.reactions_enabled %>"
+			data-emit-metadata="<%= g.emit_metadata %>"
+			data-input-position="<%= g.input_position %>"
+			data-theme="<%= g.theme %>"
+			data-lang="zh-CN"
+			crossorigin="anonymous"
+			async>
+		</script>
+	</div>
+<% } %>

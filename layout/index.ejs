@@ -1,0 +1,63 @@
+<%
+	// 分类名 -> 分类对象，用于卡片计数
+	const catMap = {};
+	site.categories.forEach(function(c){ catMap[c.name] = c; });
+
+	const cards = (theme.notes.categories || []).map(function(cfg){
+		const cat = catMap[cfg.key];
+		return {
+			cfg: cfg,
+			count: cat ? cat.posts.length : 0,
+			url: cat ? url_for(cat.path) : url_for('/categories/')
+		};
+	});
+%>
+<div id="index" class="notes-index">
+
+	<header class="notes-head">
+		<h1 class="notes-title"><%= __('notes.title') %></h1>
+		<p class="notes-desc"><%= __('notes.desc', site.posts.length) %></p>
+	</header>
+
+	<% if (cards.length){ %>
+		<div class="cat-grid">
+			<% cards.forEach(function(c){ %>
+				<a class="cat-card cat-card-<%= c.cfg.color || 'blue' %>" href="<%= c.url %>">
+					<div class="cat-card-top">
+						<i class="fa fa-<%= c.cfg.icon || 'folder' %>" aria-hidden="true"></i>
+						<span class="cat-card-count"><%= c.count %></span>
+					</div>
+					<div class="cat-card-name"><%= c.cfg.name || c.cfg.key %></div>
+					<p class="cat-card-desc"><%= c.cfg.desc || '' %></p>
+				</a>
+			<% }); %>
+		</div>
+	<% } %>
+
+	<h2 class="notes-subtitle"><%= __('notes.list') %></h2>
+
+	<div class="post-list">
+		<% page.posts.each(function(post){
+			const cat = post.categories && post.categories.length ? post.categories.data[0].name : '';
+			const brief = strip_html(post.excerpt || post.content || '').substring(0, 120);
+		%>
+			<a class="post-item" href="<%= url_for(post.path) %>">
+				<div class="post-item-main">
+					<div class="post-item-title"><%= post.title %></div>
+					<% if (brief){ %><p class="post-item-brief"><%= brief %>…</p><% } %>
+				</div>
+				<div class="post-item-meta">
+					<% if (cat){ %><span class="chip chip-soft"><%= cat %></span><% } %>
+					<time><%= date(post.date, 'YYYY-MM-DD') %></time>
+				</div>
+			</a>
+		<% }); %>
+	</div>
+
+	<% if (page.total > 1){ %>
+		<nav class="pagination-wrap">
+			<%- paginator({ prev_text: '<i class="fa fa-angle-left"></i>', next_text: '<i class="fa fa-angle-right"></i>', escape: false }) %>
+		</nav>
+	<% } %>
+
+</div>

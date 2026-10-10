@@ -1,0 +1,27 @@
+<%
+	const since = theme.footer.since;
+	const year = date(Date.now(), 'YYYY');
+	const span = since && String(since) !== year ? since + ' - ' + year : year;
+%>
+<footer id="footer">
+	<div class="footer-inner">
+		<div class="footer-left">
+			<span class="copyright">&copy; <%= span %> <%= config.author %></span>
+			<% if (theme.footer.statistics.vercount.enable){ %>
+				<span class="stat">
+					<i class="fa fa-bar-chart" aria-hidden="true"></i>
+					<span id="vercount_container_site_pv">-</span> <%= __('footer.pv') %>
+				</span>
+			<% } %>
+		</div>
+
+		<div class="footer-right">
+			<span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a></span>
+			<span>Theme <a href="https://github.com/HUSTJJD/Blog" target="_blank" rel="noopener">hybrid</a></span>
+		</div>
+	</div>
+</footer>
+
+<% if (theme.footer.statistics.vercount.enable){ %>
+	<script defer src="<%= theme.footer.statistics.vercount.src %>"></script>
+<% } %>

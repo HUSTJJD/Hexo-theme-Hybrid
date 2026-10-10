@@ -1,0 +1,7 @@
+<article class="page">
+	<% if (page.title){ %><h1 class="page-title"><%= page.title %></h1><% } %>
+	<div class="prose">
+		<%- page.content %>
+	</div>
+	<%- partial('_partial/post/comment') %>
+</article>

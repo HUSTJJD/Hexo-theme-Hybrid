@@ -1,0 +1,198 @@
+# ------------------------------------------------------
+# hybrid | 个人主页 + Wiki 笔记 混合主题
+#
+# 设计原则：
+#   1. 内容数据放 source/_data/*.yml，这里只管外观与导航
+#   2. 三种页面模式由 front-matter 的 layout 决定
+#        home -> 全宽个人主页（无侧边栏）
+#        page -> 常规页（无侧边栏）
+#        wiki -> 笔记区（带目录树侧边栏）
+# ------------------------------------------------------
+
+#------------------------------------------------------
+# 站点标识
+#------------------------------------------------------
+favicon:
+  light: /favicon-white.ico
+  dark: /favicon.ico
+
+# 顶栏左侧显示的站点名，留空则用 config.title
+brand:
+  name: ''
+  # 顶栏是否显示头像
+  avatar: true
+
+#------------------------------------------------------
+# 导航菜单
+# icon 使用 font-awesome 4.7 的类名（不含 fa- 前缀）
+#------------------------------------------------------
+menu:
+  首页:
+    url: /
+    icon: home
+  笔记:
+    url: /notes/
+    icon: sitemap
+  分类:
+    url: /categories/
+    icon: folder-open
+  标签:
+    url: /tags/
+    icon: tags
+  关于:
+    url: /about/
+    icon: user
+
+# 顶栏右侧外链图标
+social:
+  github:
+    enable: false
+    url: ''
+    icon: github
+  email:
+    enable: false
+    url: ''
+    icon: envelope
+  rss:
+    enable: false
+    url: /atom.xml
+    icon: rss
+
+#------------------------------------------------------
+# 外观
+#------------------------------------------------------
+appearance:
+  # 暗色模式：auto | light | dark
+  # auto 会跟随系统偏好，并记住用户手动切换的结果
+  color_scheme: auto
+  # 背景纹理：none | grid | dots
+  backdrop: grid
+  # 顶栏滚动时隐藏
+  hide_header_on_scroll: true
+
+#------------------------------------------------------
+# 侧边栏（目录树）
+#------------------------------------------------------
+sidebar:
+  # 节点显示文章标题还是文件名，false 用文件名
+  usePostTitle: false
+  # 桌面端默认展开侧边栏
+  default_open: true
+  # 搜索框：tree 过滤目录树，google/baidu 跳转站外搜索
+  search:
+    mode: tree
+    engine: https://www.google.com/search?q=
+
+#------------------------------------------------------
+# 笔记入口 /notes/
+#------------------------------------------------------
+notes:
+  # 分类卡片：key 为分类名（与 _posts 目录 / categories 一致）
+  # 未列出的分类仍会出现在列表中，但不会有卡片
+  categories:
+    - key: LLM
+      name: LLM / 大模型
+      desc: 大模型原理、训练与 Agent 工程化
+      icon: brain
+      color: violet
+    - key: 'Unreal Engine'
+      name: Unreal Engine
+      desc: Gameplay、GAS、动画与网络同步
+      icon: gamepad
+      color: amber
+    - key: Programing
+      name: 编程
+      desc: C/C++、Python 与工程实践
+      icon: code
+      color: blue
+    - key: Base Knowledge
+      name: 基础知识
+      desc: 图形学、数学与计算机基础
+      icon: book
+      color: green
+    - key: Work Experience
+      name: 工作经验
+      desc: 项目复盘与工程方法论
+      icon: briefcase
+      color: rose
+  # 列表中每页显示条数（由 _config.yml 的 per_page 覆盖）
+  # 首页「最近更新」取多少条
+  recent_count: 6
+
+#------------------------------------------------------
+# 代码块的增强配置
+#------------------------------------------------------
+code:
+  highlight:
+    # highlight.js 样式名：https://highlightjs.org/static/demo/
+    highlightcss:
+      style: "tokyo-night-dark"
+    prismcss:
+      style: "prism"
+  copyBtn:
+    enable: true
+
+#------------------------------------------------------
+# 文章版权
+#------------------------------------------------------
+post:
+  copyright:
+    enable: true
+    # BY | BY-SA | BY-ND | BY-NC | BY-NC-SA | BY-NC-ND | ZERO
+    license: 'BY'
+    author:
+      enable: true
+    postDate:
+      enable: false
+      format: "LL"
+    updateDate:
+      enable: true
+      format: "LL"
+
+#------------------------------------------------------
+# 页脚
+#------------------------------------------------------
+footer:
+  since: 2024
+  # 访问统计（Vercount）
+  statistics:
+    vercount:
+      enable: true
+      src: https://cn.vercount.one/js
+
+#------------------------------------------------------
+# 评论（giscus）https://giscus.app/
+#------------------------------------------------------
+comment:
+  giscus:
+    enable: false
+    repo:
+    repo_id:
+    category:
+    category_id:
+    mapping: pathname
+    strict: 0
+    reactions_enabled: 1
+    emit_metadata: 0
+    input_position: bottom
+    theme: preferred_color_scheme
+
+#------------------------------------------------------
+# 统计
+#------------------------------------------------------
+analytics:
+  baidu:
+    enable: false
+    hm: ''
+  google:
+    enable: false
+    id: ''
+
+#------------------------------------------------------
+# 自定义 CSS / JS（相对站点根目录）
+#------------------------------------------------------
+custom:
+  css:
+    path:
+  js:
+    path:

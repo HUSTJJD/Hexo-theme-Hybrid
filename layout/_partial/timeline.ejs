@@ -1,0 +1,21 @@
+<% const items = locals.items || []; %>
+<ol class="timeline">
+	<% items.forEach(function(item){ %>
+		<li class="timeline-item">
+			<div class="timeline-marker"></div>
+			<div class="timeline-body">
+				<div class="timeline-head">
+					<span class="timeline-title"><%= item.title %></span>
+					<% if (item.role){ %><span class="timeline-role"><%= item.role %></span><% } %>
+					<span class="timeline-period"><%= item.period %></span>
+				</div>
+				<% if (item.org){ %><div class="timeline-org"><%= item.org %></div><% } %>
+				<% if (item.points && item.points.length){ %>
+					<ul class="timeline-points">
+						<% item.points.forEach(function(p){ %><li><%= p %></li><% }); %>
+					</ul>
+				<% } %>
+			</div>
+		</li>
+	<% }); %>
+</ol>

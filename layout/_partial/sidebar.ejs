@@ -1,0 +1,136 @@
+<aside id="sidebar" aria-label="笔记目录">
+	<button id="sidebar-toggle" class="toggle" type="button" aria-label="收起目录">
+		<i class="fa fa-arrow-right" aria-hidden="true"></i>
+	</button>
+
+	<div id="site-toc">
+		<a class="toc-home" href="<%= url_for('/notes/') %>">
+			<i class="fa fa-sitemap" aria-hidden="true"></i>
+			<span><%= __('notes.all') %></span>
+			<span class="toc-count"><%= site.posts.length %></span>
+		</a>
+
+		<div class="search-wrap">
+			<i class="fa fa-search" aria-hidden="true"></i>
+			<input id="search-input" class="search-input" type="search" autocomplete="off"
+				data-engine="<%= (theme.sidebar && theme.sidebar.search && theme.sidebar.search.engine) || 'https://www.google.com/search?q=' %>"
+				placeholder="<%= __('search.placeholder') %>">
+		</div>
+
+		<div id="tree">
+			<%
+				// 把文章路径转换成树形目录结构
+				const pathToTree = (treeNodes) => {
+					var output = [];
+					treeNodes.forEach(function(post){
+						var chain = post.slug.split("/");
+						var currentNode = output;
+						for (var j = 0; j < chain.length; j++) {
+							if (chain[j] === '') {
+								break;
+							}
+							var wantedNode = chain[j];
+							var lastNode = currentNode;
+
+							for (var k = 0; k < currentNode.length; k++) {
+								if (currentNode[k].title == wantedNode) {
+									currentNode = currentNode[k].children;
+									break;
+								}
+							}
+
+							if (lastNode == currentNode) {
+								var newNode = currentNode[k] = { post: post, title: wantedNode, children: [] };
+								currentNode = newNode.children;
+							} else {
+								delete currentNode.children
+							}
+						}
+					});
+					return output;
+				}
+			%>
+			<%
+				// 递归渲染目录树
+				const showTree = (treeNodes) => {
+
+					// 文件夹排在文件前面，同类型按标题字典序排序
+					treeNodes.sort(function(a, b){
+						const isFolderA = a.children && a.children.length > 0;
+						const isFolderB = b.children && b.children.length > 0;
+
+						if (isFolderA && !isFolderB) return -1;
+						if (!isFolderA && isFolderB) return 1;
+
+						return a.title.localeCompare(b.title);
+					});
+
+					treeNodes.forEach(function(node) {
+						if ( node.children == 0 ) {
+							let fullUrl = node.post.permalink.slice(0,-1);
+							const url = new URL( fullUrl);
+							const linkTitle = decodeURIComponent(url.pathname);
+			%>
+							<ul>
+								<li class="file<%- (is_post() && node.post._id == page._id) ? ' active' : '' %>">
+									<a href="<%- url_for(node.post.path) %>" title="<%- linkTitle %>">
+									<% if (theme.sidebar && theme.sidebar.usePostTitle) { %>
+										<%- node.post.title || node.title %>
+									<% } else { %>
+										<%- node.title %>
+									<% } %>
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			<%
+						} else {
+							let parent;
+							let childrens = [];
+							node.children.forEach(child => {
+								const titleList = child.post.slug.split("/");
+								const title = titleList.slice(-1)[0];
+								if(node.title === title) {
+									parent = child;
+								}else{
+									childrens.push(child);
+								}
+							});
+
+							let pageTitle = (page.path || '').slice(0,-1).split("/").slice(-1)[0];
+
+							let linkTitle;
+							if(parent && parent.post !== parent){
+								let fullUrl = parent.post.permalink.slice(0,-1);
+								const url = new URL( fullUrl);
+								linkTitle = decodeURIComponent(url.pathname);
+							} else{
+								linkTitle = '';
+							}
+			%>
+							<ul>
+								<li class="directory">
+			<% 						if(linkTitle){ %>
+										<a class="directory <%- (node.title == pageTitle) ? 'active' : '' %>" href="<%- url_for(parent.post.path) %>" title="<%- linkTitle %>">
+											<i class="fa fa-plus-square-o"></i>
+											<%- node.title %>
+										</a>
+										<div class="article-toc" style="display: none;"></div>
+			<% 						} else { %>
+										<a title="<%- node.title %>" class="directory-empty">
+											<i class="fa fa-plus-square-o"></i>
+											<%- node.title %>
+										</a>
+			<% 						} %>
+									<%- showTree(childrens) %>
+								</li>
+							</ul>
+			<%
+						}
+					});
+				}
+				showTree(pathToTree(site.posts))
+			%>
+		</div>
+	</div>
+</aside>

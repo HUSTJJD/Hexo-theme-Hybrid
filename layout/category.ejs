@@ -1,0 +1,29 @@
+<%
+	const current = page.category;
+	const list = current ? (page.posts || []) : site.categories;
+%>
+<div class="page">
+	<h1 class="page-title">
+		<%= current ? current : __('category.title') %>
+		<% if (current){ %><span class="page-count"><%= list.length %> <%= __('unit.post') %></span><% } %>
+	</h1>
+
+	<% if (!current){ %>
+		<div class="chip-cloud">
+			<% site.categories.forEach(function(c){ %>
+				<a class="chip chip-lg" href="<%= url_for(c.path) %>"><%= c.name %> <em><%= c.posts.length %></em></a>
+			<% }); %>
+		</div>
+	<% } else { %>
+		<div class="post-list">
+			<% list.each(function(post){ %>
+				<a class="post-item" href="<%= url_for(post.path) %>">
+					<div class="post-item-main">
+						<div class="post-item-title"><%= post.title %></div>
+					</div>
+					<div class="post-item-meta"><time><%= date(post.date, 'YYYY-MM-DD') %></time></div>
+				</a>
+			<% }); %>
+		</div>
+	<% } %>
+</div>
