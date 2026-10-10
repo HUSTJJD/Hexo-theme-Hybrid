@@ -71,23 +71,6 @@ appearance:
   hide_header_on_scroll: true
 
 #------------------------------------------------------
-# Markdown 增强
-# 语法由站点的渲染器插件提供，主题只负责样式和前端渲染。
-# 需要站点安装对应依赖，见 README 的「Markdown 增强」一节。
-#------------------------------------------------------
-markdown:
-  # Mermaid：把 ```mermaid 代码块渲染成流程图 / 时序图 / 类图…
-  mermaid:
-    enable: true
-    version: '12.1.0'
-    # default | neutral | dark | forest | base（暗色模式下自动用 dark）
-    theme: default
-  # KaTeX：行内 $...$、块级 $$...$$
-  katex:
-    enable: true
-    version: '0.19.0'
-
-#------------------------------------------------------
 # 侧边栏（目录树）
 #------------------------------------------------------
 sidebar:
