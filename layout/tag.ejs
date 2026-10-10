@@ -13,12 +13,14 @@
 	</h1>
 
 	<% if (!current){ %>
-		<p class="page-desc"><%= __('tag.desc', cloud.length) %></p>
-		<div class="chip-cloud">
-			<% cloud.forEach(function(t){ %>
-				<a class="chip chip-lg" href="<%= url_for(t.path) %>"><%= t.name %> <em><%= t.posts.length %></em></a>
-			<% }); %>
-		</div>
+		<% if (cloud.length){ %>
+			<p class="page-desc"><%= __('tag.desc', cloud.length) %></p>
+			<div class="chip-cloud">
+				<% cloud.forEach(function(t){ %>
+					<a class="chip chip-lg" href="<%= url_for(t.path) %>"><%= t.name %> <em><%= t.posts.length %></em></a>
+				<% }); %>
+			</div>
+		<% } %>
 	<% } else { %>
 		<div class="post-list">
 			<% list.each(function(post){
