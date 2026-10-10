@@ -92,13 +92,16 @@
 
 	/* ---------------------------------------------------------
 	   侧边栏：折叠 / 展开
+	   窄屏（<=1100px）侧栏浮在内容之上并默认收起，宽屏常驻并默认展开；
+	   跨越断点或改变窗口宽度时自动跟随，手动开合只在宽屏记入偏好。
 	   --------------------------------------------------------- */
 	function initSidebar() {
 		const sidebar = $('#sidebar');
 		const toggle = $('#sidebar-toggle');
 		if (!sidebar || !toggle) return;
 
-		const isNarrow = () => window.matchMedia('(max-width: 1100px)').matches;
+		const mq = window.matchMedia('(max-width: 1100px)');
+		const KEY = 'hybrid-sidebar';
 
 		const setCollapsed = (collapsed) => {
 			sidebar.classList.toggle('is-collapsed', collapsed);
@@ -110,26 +113,42 @@
 			}
 		};
 
-		// 初始状态：窄屏收起，宽屏展开
-		setCollapsed(isNarrow());
+		// null = 跟随窗口宽度；true/false = 用户手动指定
+		let userPref = null;
+		const saved = localStorage.getItem(KEY);
+		if (!mq.matches && (saved === '1' || saved === '0')) userPref = saved === '1';
+
+		const apply = () => setCollapsed(userPref === null ? mq.matches : userPref);
+
+		apply();
 
 		toggle.addEventListener('click', () => {
-			setCollapsed(!sidebar.classList.contains('is-collapsed'));
+			userPref = !sidebar.classList.contains('is-collapsed');
+			if (!mq.matches) localStorage.setItem(KEY, userPref ? '1' : '0');
+			setCollapsed(userPref);
 		});
+
+		// 跨过断点就回到「自动」：窄屏收起、宽屏展开
+		const onBreakpoint = () => { userPref = null; apply(); };
+		if (mq.addEventListener) mq.addEventListener('change', onBreakpoint);
+		else if (mq.addListener) mq.addListener(onBreakpoint);
 
 		// 窄屏点击侧边栏外部关闭
 		document.addEventListener('click', (e) => {
-			if (!isNarrow()) return;
+			if (!mq.matches) return;
 			if (!e.target.closest('#sidebar') && !e.target.closest('#sidebar-toggle') &&
 				!sidebar.classList.contains('is-collapsed')) {
+				userPref = false;
 				setCollapsed(true);
 			}
 		});
 	}
 
 	/* ---------------------------------------------------------
-	   目录树：展开 / 折叠
+	   目录树：展开 / 折叠 + 展开状态记忆
 	   --------------------------------------------------------- */
+	const TREE_KEY = 'hybrid-tree-open';
+
 	// 目录树的结构是 <li><a>…</a><ul>…</ul><ul>…</ul></li>，
 	// 子列表是 li 的直接子级，而不是 a.closest('ul') 的兄弟
 	function childUls(node) {
@@ -153,8 +172,13 @@
 		icon.classList.toggle('fa-plus-square-o', !open);
 	}
 
+	// 目录行的链接（排除右侧的索引入口图标）
+	function dirLinks() {
+		return $$('#tree li.directory > a').filter(a => !a.classList.contains('dir-index'));
+	}
+
 	function syncTreeIcons() {
-		$$('#tree li.directory > a').forEach(syncIcon);
+		dirLinks().forEach(syncIcon);
 	}
 
 	function setExpanded(node, expanded) {
@@ -165,11 +189,6 @@
 		return true;
 	}
 
-	function toggleNode(node) {
-		if (!node) return;
-		setExpanded(node, !isExpanded(node));
-	}
-
 	// 自下而上展开祖先链，把目标节点「露出来」
 	function showPath(node) {
 		if (!node || node.id === 'tree') return;
@@ -177,17 +196,58 @@
 		showPath(node.parentElement);
 	}
 
+	// 用「根 -> 当前节点」的标题路径做 key，保证跨页面、刷新后依然稳定
+	function nodeKey(node) {
+		const parts = [];
+		let li = node && node.closest('li');
+		while (li && li.id !== 'tree') {
+			const a = li.querySelector(':scope > a');
+			if (a) parts.unshift((a.textContent || '').trim());
+			const ul = li.parentElement;
+			li = ul && ul.closest ? ul.closest('li') : null;
+		}
+		return parts.join('/');
+	}
+
+	function readTreeState() {
+		try {
+			const raw = JSON.parse(localStorage.getItem(TREE_KEY) || '[]');
+			return Array.isArray(raw) ? raw : [];
+		} catch (e) {
+			return [];
+		}
+	}
+
+	// 只在用户手动开合时写入，避免搜索过滤把状态冲掉
+	function saveTreeState() {
+		const open = dirLinks().filter(isExpanded).map(nodeKey);
+		try {
+			localStorage.setItem(TREE_KEY, JSON.stringify(open));
+		} catch (e) { /* 隐私模式下忽略 */ }
+	}
+
+	// 恢复上次展开的节点（连同祖先链），再展开到当前页面所在节点
+	function restoreTreeView() {
+		const saved = new Set(readTreeState());
+		dirLinks().forEach(a => {
+			if (!saved.has(nodeKey(a))) return;
+			showPath(a);
+			setExpanded(a, true);
+		});
+		const active = $('#tree .active');
+		if (active) showPath(active);
+		syncTreeIcons();
+	}
+
 	function initTree() {
 		const tree = $('#tree');
 		if (!tree) return;
 
-		// 展开到当前激活节点
-		const active = $('#tree .active');
-		if (active) showPath(active);
-		syncTreeIcons();
+		restoreTreeView();
 
-		// 目录节点：点 +/- 图标展开折叠，点标题跳到该目录的索引笔记
-		// 文件节点：不做拦截，交给浏览器默认跳转
+		// 目录行整行点击 = 展开/折叠，不再触发跳转，避免整页刷新后树又收回去。
+		// 需要打开该目录的索引笔记时，点右侧的 .dir-index 图标（原生跳转）。
+		// 文件节点不做拦截。
 		document.addEventListener('click', (e) => {
 			const target = e.target;
 			if (!target || !target.closest) return;
@@ -195,15 +255,15 @@
 			const link = target.closest('#tree li > a');
 			if (!link) return;
 
-			// 只处理目录，文件节点保持原生跳转
+			// 索引入口保持原生跳转
+			if (link.classList.contains('dir-index')) return;
+
 			const li = link.closest('li');
 			if (!li || !li.classList.contains('directory')) return;
 
-			// 命中折叠图标，或该目录没有索引笔记（无 href）时才拦截
-			if (target.closest('.fa') || !link.getAttribute('href')) {
-				e.preventDefault();
-				toggleNode(link);
-			}
+			e.preventDefault();
+			setExpanded(link, !isExpanded(link));
+			saveTreeState();
 		});
 	}
 
@@ -221,13 +281,12 @@
 			const kw = input.value.trim();
 
 			if (!kw) {
+				// 清空关键词后回到「记忆中的树」，而不是只剩当前页面一条路径
 				$$('#tree ul', tree).forEach(ul => { ul.style.display = ''; });
 				$$('#tree li.file > a, #tree li.directory > a').forEach(a => {
 					a.style.display = '';
 				});
-				const active = $('#tree .active');
-				if (active) showPath(active);
-				syncTreeIcons();
+				restoreTreeView();
 				return;
 			}
 

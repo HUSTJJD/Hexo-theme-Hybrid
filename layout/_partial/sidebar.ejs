@@ -19,6 +19,18 @@
 
 		<div id="tree">
 			<%
+				// 当前页面在目录树中的路径：
+				// 文章用 slug（形如 LLM/TiniestGPT/11-frontier），其余页面用输出路径去扩展名。
+				// 旧写法用 page.path 取最后一段，permalink 为 :abbrlink.html 时永远匹配不上，
+				// 导致索引页进目录树后没有任何 active 节点、树被整体收起。
+				const pagePath = (function () {
+					let raw = '';
+					if (is_post() && page.slug) raw = String(page.slug);
+					else if (page.source) raw = String(page.source).replace(/^_posts\//, '').replace(/\.md$/i, '');
+					else if (page.path) raw = String(page.path).replace(/\.html?$/i, '');
+					return raw.replace(/^\/+|\/+$/g, '');
+				})();
+
 				// 把文章路径转换成树形目录结构
 				const pathToTree = (treeNodes) => {
 					var output = [];
@@ -51,8 +63,8 @@
 				}
 			%>
 			<%
-				// 递归渲染目录树
-				const showTree = (treeNodes) => {
+				// 递归渲染目录树，prefix 是当前节点在树中的完整路径
+				const showTree = (treeNodes, prefix) => {
 
 					// 文件夹排在文件前面，同类型按标题字典序排序
 					treeNodes.sort(function(a, b){
@@ -66,14 +78,14 @@
 					});
 
 					treeNodes.forEach(function(node) {
+						const nodePath = prefix ? prefix + '/' + node.title : node.title;
+
 						if ( node.children == 0 ) {
-							let fullUrl = node.post.permalink.slice(0,-1);
-							const url = new URL( fullUrl);
-							const linkTitle = decodeURIComponent(url.pathname);
+							const fileActive = (is_post() && node.post._id == page._id) || nodePath === pagePath;
 			%>
 							<ul>
-								<li class="file<%- (is_post() && node.post._id == page._id) ? ' active' : '' %>">
-									<a href="<%- url_for(node.post.path) %>" title="<%- linkTitle %>">
+								<li class="file<%- fileActive ? ' active' : '' %>">
+									<a href="<%- url_for(node.post.path) %>" title="<%- nodePath %>">
 									<% if (theme.sidebar && theme.sidebar.usePostTitle) { %>
 										<%- node.post.title || node.title %>
 									<% } else { %>
@@ -85,6 +97,7 @@
 							</ul>
 			<%
 						} else {
+							// 与目录同名的那篇笔记就是该目录的索引笔记
 							let parent;
 							let childrens = [];
 							node.children.forEach(child => {
@@ -92,44 +105,45 @@
 								const title = titleList.slice(-1)[0];
 								if(node.title === title) {
 									parent = child;
-								}else{
+								} else {
 									childrens.push(child);
 								}
 							});
 
-							let pageTitle = (page.path || '').slice(0,-1).split("/").slice(-1)[0];
-
-							let linkTitle;
-							if(parent && parent.post !== parent){
-								let fullUrl = parent.post.permalink.slice(0,-1);
-								const url = new URL( fullUrl);
-								linkTitle = decodeURIComponent(url.pathname);
-							} else{
-								linkTitle = '';
-							}
+							const hasIndex = !!parent;
+							const indexUrl = hasIndex ? url_for(parent.post.path) : '';
+							// 索引页的路径是「目录路径 + / + 目录名」
+							const dirActive = hasIndex && (nodePath + '/' + node.title) === pagePath;
 			%>
 							<ul>
 								<li class="directory">
-			<% 						if(linkTitle){ %>
-										<a class="directory <%- (node.title == pageTitle) ? 'active' : '' %>" href="<%- url_for(parent.post.path) %>" title="<%- linkTitle %>">
+			<% 						if(hasIndex){ %>
+										<%# relative_link 下指向当前页的链接会是空串，这里就不写 href %>
+										<a class="directory <%- dirActive ? 'active' : '' %>"<% if (indexUrl) { %> href="<%- indexUrl %>"<% } %> title="<%- nodePath %>">
 											<i class="fa fa-plus-square-o"></i>
 											<%- node.title %>
 										</a>
-										<div class="article-toc" style="display: none;"></div>
 			<% 						} else { %>
-										<a title="<%- node.title %>" class="directory-empty">
+										<a title="<%- nodePath %>" class="directory-empty">
 											<i class="fa fa-plus-square-o"></i>
 											<%- node.title %>
 										</a>
 			<% 						} %>
-									<%- showTree(childrens) %>
+									<div class="article-toc" style="display: none;"></div>
+			<% 						if(hasIndex && indexUrl){ %>
+										<%# 目录行只负责展开/折叠，索引笔记通过这个入口打开 %>
+										<a class="dir-index" href="<%- indexUrl %>" title="打开索引笔记" aria-label="打开索引笔记">
+											<i class="fa fa-file-text-o" aria-hidden="true"></i>
+										</a>
+			<% 						} %>
+									<%- showTree(childrens, nodePath) %>
 								</li>
 							</ul>
 			<%
 						}
 					});
 				}
-				showTree(pathToTree(site.posts))
+				showTree(pathToTree(site.posts), '')
 			%>
 		</div>
 	</div>

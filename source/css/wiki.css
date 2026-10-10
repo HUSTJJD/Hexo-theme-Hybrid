@@ -37,14 +37,26 @@
 }
 #sidebar-toggle:hover { color: var(--c-accent); transform: scale(1.05); }
 
-/* 侧栏收起时内容区占满 */
-body.sidebar-collapsed .mode-wiki #content,
-body.sidebar-collapsed #content { margin-left: 0; margin-right: auto; }
-
+/* ------------------------------------------------------------
+   内容区：在「侧栏右侧的剩余空间」里居中
+   做法是把侧栏宽度算成一份额外的左内边距，再让整块容器居中，
+   这样正文既不会被侧栏压住，也不会贴在剩余区域的左边。
+   --content-offset 由开合状态 / 断点决定，窄屏归零。
+   ------------------------------------------------------------ */
 .mode-wiki #content {
-	max-width: var(--maxw-prose);
-	margin-left: calc(var(--sidebar-w) + 16px);
-	margin-right: auto;
+	max-width: calc(var(--maxw-prose) + var(--content-offset, 0px) + 48px);
+	margin: 0 auto;
+	padding-left: calc(var(--content-offset, 0px) + 24px);
+	transition: max-width .25s ease, padding-left .25s ease;
+}
+
+/* 宽屏且侧栏常驻时，把侧栏宽度计入占位 */
+body.mode-wiki:not(.sidebar-collapsed) { --content-offset: var(--sidebar-w); }
+
+/* 页脚跟着内容区一起偏移，避免正文和页脚对不齐 */
+body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
+	max-width: calc(var(--maxw) + var(--sidebar-w));
+	padding-left: calc(24px + var(--sidebar-w));
 }
 
 /* ------------------------------------------------------------
@@ -104,8 +116,26 @@ body.sidebar-collapsed #content { margin-left: 0; margin-right: auto; }
 }
 
 #tree li.directory > a { font-weight: 600; color: var(--c-text); }
+#tree li.directory > a.directory { padding-right: 30px; }
 
-/* 折叠图标即点击热区，单独撑开一点，避免误点到标题触发跳转 */
+/* 目录的索引笔记入口：目录行本身只负责展开/折叠，
+   想打开该目录的索引笔记就点这个图标 */
+#tree li.directory > .dir-index {
+	position: absolute;
+	top: 3px; right: 6px;
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 22px; height: 22px; padding: 0;
+	border-radius: var(--radius-sm);
+	font-size: 11px;
+	color: var(--c-text-mute);
+	opacity: .45;
+	transition: opacity .15s ease, color .15s ease, background-color .15s ease;
+}
+#tree li.directory:hover > .dir-index { opacity: .9; }
+#tree li.directory > .dir-index:hover { background: var(--c-bg); color: var(--c-accent); opacity: 1; }
+#tree li.directory > .dir-index > i { width: auto; margin: 0; }
+
+/* 折叠图标沿用整行的点击行为：点图标或标题都是展开/折叠 */
 #tree li.directory > a > i {
 	display: inline-block;
 	width: 20px;
@@ -191,13 +221,18 @@ body.sidebar-collapsed #content { margin-left: 0; margin-right: auto; }
    响应式
    ------------------------------------------------------------ */
 @media (max-width: 1100px) {
+	/* 窄屏侧栏浮在内容之上，内容区按整屏居中 */
 	#sidebar {
 		box-shadow: var(--shadow-lg);
-			transform: translateX(-100%);
-		}
-		#sidebar:not(.is-collapsed) { transform: none; }
-		.mode-wiki #content { margin-left: 0; margin-right: auto; }
+		transform: translateX(-100%);
 	}
+	#sidebar:not(.is-collapsed) { transform: none; }
+	.mode-wiki #content { --content-offset: 0px; }
+	body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
+		max-width: var(--maxw);
+		padding-left: 24px;
+	}
+}
 
 @media (max-width: 860px) {
 	#article-title { font-size: 24px; }
