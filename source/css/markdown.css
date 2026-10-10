@@ -1,0 +1,186 @@
+/* ============================================================
+   增强 Markdown：图表、公式、提示块、任务列表、脚注
+   这些元素由 markdown-it 插件在构建期生成，这里只负责呈现
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Mermaid 图表
+   渲染前以等宽字体展示源码，渲染成功后由 JS 置为 data-loaded="true"
+   ------------------------------------------------------------ */
+.mermaid {
+	margin: 1.6em 0;
+	text-align: center;
+}
+
+.mermaid[data-loaded="false"] {
+	text-align: left;
+	white-space: pre;
+	overflow: auto;
+	padding: 16px;
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius);
+	background: var(--c-surface-2);
+	font-family: var(--font-mono);
+	font-size: 13px;
+	line-height: 1.7;
+	color: var(--c-text-soft);
+}
+
+.mermaid svg {
+	max-width: 100%;
+	height: auto;
+}
+
+/* ------------------------------------------------------------
+   KaTeX 公式
+   公式由构建期渲染成 HTML+MathML，这里只处理溢出与字号
+   ------------------------------------------------------------ */
+.katex { font-size: 1.05em; }
+
+.katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 6px 0;
+	margin: 1.4em 0;
+}
+
+.katex-display > .katex { display: inline-block; text-align: initial; }
+
+/* 公式渲染失败时 KaTeX 会输出红色错误文本，避免刺眼 */
+.katex-error {
+	color: var(--c-rose);
+	font-family: var(--font-mono);
+	font-size: .9em;
+}
+
+/* ------------------------------------------------------------
+   提示块 :::tip / :::info / :::warning / :::danger
+   由 markdown-it-container 渲染成 <div class="tip"> 等
+   ------------------------------------------------------------ */
+.prose .tip,
+.prose .info,
+.prose .warning,
+.prose .danger {
+	--box: var(--c-blue);
+	--box-soft: var(--c-blue-soft);
+	position: relative;
+	margin: 1.4em 0;
+	padding: 14px 18px 14px 46px;
+	border-left: 3px solid var(--box);
+	border-radius: var(--radius-sm);
+	background: var(--box-soft);
+	color: var(--c-text);
+}
+
+.prose .tip::before,
+.prose .info::before,
+.prose .warning::before,
+.prose .danger::before {
+	position: absolute;
+	left: 16px;
+	top: 14px;
+	font-family: FontAwesome, sans-serif;
+	font-size: 15px;
+	color: var(--box);
+}
+
+.prose .tip { --box: var(--c-green); --box-soft: var(--c-green-soft); }
+.prose .tip::before { content: "\f058"; }        /* fa-check-circle */
+
+.prose .info { --box: var(--c-blue); --box-soft: var(--c-blue-soft); }
+.prose .info::before { content: "\f05a"; }       /* fa-info-circle */
+
+.prose .warning { --box: var(--c-amber); --box-soft: var(--c-amber-soft); }
+.prose .warning::before { content: "\f071"; }    /* fa-exclamation-triangle */
+
+.prose .danger { --box: var(--c-rose); --box-soft: var(--c-rose-soft); }
+.prose .danger::before { content: "\f057"; }     /* fa-times-circle */
+
+.prose .tip > :first-child,
+.prose .info > :first-child,
+.prose .warning > :first-child,
+.prose .danger > :first-child { margin-top: 0; }
+
+.prose .tip > :last-child,
+.prose .info > :last-child,
+.prose .warning > :last-child,
+.prose .danger > :last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------
+   任务列表 - [x] item
+   ------------------------------------------------------------ */
+.prose ul.contains-task-list {
+	list-style: none;
+	padding-left: 2px;
+}
+
+.prose li.task-list-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.prose li.task-list-item input[type="checkbox"] {
+	margin: 6px 0 0;
+	accent-color: var(--c-accent);
+	flex: none;
+}
+
+/* ------------------------------------------------------------
+   脚注
+   ------------------------------------------------------------ */
+.prose .footnotes {
+	margin-top: 2.4em;
+	padding-top: 1.2em;
+	border-top: 1px solid var(--c-border);
+	font-size: 13.5px;
+	color: var(--c-text-soft);
+}
+
+.prose .footnotes ol { padding-left: 1.2em; }
+.prose .footnote-ref > a,
+.prose .footnote-backref {
+	text-decoration: none;
+	padding: 0 2px;
+	color: var(--c-accent);
+}
+.prose .footnote-ref > a:hover,
+.prose .footnote-backref:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------
+   行内增强：上下标、高亮、插入、缩写、定义列表
+   ------------------------------------------------------------ */
+.prose sub, .prose sup { font-size: .75em; }
+
+.prose mark {
+	background: var(--c-mark);
+	color: inherit;
+	padding: .1em .25em;
+	border-radius: 3px;
+}
+
+.prose ins { text-decoration-color: var(--c-accent); }
+
+.prose abbr[title] {
+	text-decoration: underline dotted var(--c-text-mute);
+	text-underline-offset: 2px;
+	cursor: help;
+}
+
+.prose dl { margin: 1.2em 0; }
+.prose dt { font-weight: 650; margin-top: .8em; }
+.prose dd { margin: .3em 0 .3em 1.4em; color: var(--c-text-soft); }
+
+/* ------------------------------------------------------------
+   Emoji
+   ------------------------------------------------------------ */
+.prose .emoji,
+.prose img.emoji {
+	display: inline-block;
+	height: 1.2em;
+	width: 1.2em;
+	vertical-align: -.1em;
+	margin: 0 .1em;
+	box-shadow: none;
+	border-radius: 0;
+}

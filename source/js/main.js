@@ -48,6 +48,7 @@
 				root.setAttribute('data-scheme', next);
 				localStorage.setItem(KEY, next);
 				syncIcon();
+				window.dispatchEvent(new CustomEvent('hybrid:schemechange'));
 			});
 		}
 	}
@@ -129,40 +130,51 @@
 	/* ---------------------------------------------------------
 	   目录树：展开 / 折叠
 	   --------------------------------------------------------- */
-	function toggleNode(node) {
-		if (!node) return;
-		const nodeUl = node.closest('ul');
-		if (!nodeUl) return;
-
-		const dirIcon = node.querySelector('.fa');
-
-		if (dirIcon && dirIcon.classList.contains('fa-minus-square-o')) {
-			$$(':scope > ul', nodeUl).forEach(ul => { ul.style.display = 'none'; });
-			dirIcon.classList.replace('fa-minus-square-o', 'fa-plus-square-o');
-			return;
-		}
-
-		$$(':scope > ul', nodeUl).forEach(ul => { ul.style.display = 'block'; });
-		if (dirIcon) dirIcon.classList.replace('fa-plus-square-o', 'fa-minus-square-o');
+	// 目录树的结构是 <li><a>…</a><ul>…</ul><ul>…</ul></li>，
+	// 子列表是 li 的直接子级，而不是 a.closest('ul') 的兄弟
+	function childUls(node) {
+		const li = node && node.closest('li');
+		if (!li) return [];
+		return $$(':scope > ul', li);
 	}
 
-	function showPath(node, withSiblings) {
+	function isExpanded(node) {
+		const uls = childUls(node);
+		return uls.length > 0 && uls.some(ul => ul.style.display === 'block');
+	}
+
+	// 图标跟随子列表的真实显示状态，避免「减号图标 + 收起的内容」
+	function syncIcon(node) {
+		if (!node) return;
+		const icon = node.querySelector('.fa');
+		if (!icon) return;
+		const open = isExpanded(node);
+		icon.classList.toggle('fa-minus-square-o', open);
+		icon.classList.toggle('fa-plus-square-o', !open);
+	}
+
+	function syncTreeIcons() {
+		$$('#tree li.directory > a').forEach(syncIcon);
+	}
+
+	function setExpanded(node, expanded) {
+		const uls = childUls(node);
+		if (!uls.length) return false;
+		uls.forEach(ul => { ul.style.display = expanded ? 'block' : 'none'; });
+		syncIcon(node);
+		return true;
+	}
+
+	function toggleNode(node) {
+		if (!node) return;
+		setExpanded(node, !isExpanded(node));
+	}
+
+	// 自下而上展开祖先链，把目标节点「露出来」
+	function showPath(node) {
 		if (!node || node.id === 'tree') return;
-
-		const tag = node.tagName.toLowerCase();
-		if (tag === 'ul') {
-			node.style.display = 'block';
-			if (withSiblings) {
-				Array.from(node.parentNode.children).forEach(child => {
-					child.style.display = child.tagName.toLowerCase() === 'a' ? 'inline' : 'block';
-					const icon = child.querySelector && child.querySelector('.fa-plus-square-o');
-					if (icon) icon.classList.replace('fa-plus-square-o', 'fa-minus-square-o');
-				});
-			}
-		}
-
-		showPath(node.parentElement, withSiblings);
-		if (tag === 'a') toggleNode(node);
+		if (node.tagName.toLowerCase() === 'ul') node.style.display = 'block';
+		showPath(node.parentElement);
 	}
 
 	function initTree() {
@@ -171,13 +183,26 @@
 
 		// 展开到当前激活节点
 		const active = $('#tree .active');
-		if (active) showPath(active, true);
+		if (active) showPath(active);
+		syncTreeIcons();
 
-		// 点击目录节点展开/折叠
+		// 目录节点：点 +/- 图标展开折叠，点标题跳到该目录的索引笔记
+		// 文件节点：不做拦截，交给浏览器默认跳转
 		document.addEventListener('click', (e) => {
-			if (e.target.matches('#tree li.file > a, #tree li.directory > a')) {
+			const target = e.target;
+			if (!target || !target.closest) return;
+
+			const link = target.closest('#tree li > a');
+			if (!link) return;
+
+			// 只处理目录，文件节点保持原生跳转
+			const li = link.closest('li');
+			if (!li || !li.classList.contains('directory')) return;
+
+			// 命中折叠图标，或该目录没有索引笔记（无 href）时才拦截
+			if (target.closest('.fa') || !link.getAttribute('href')) {
 				e.preventDefault();
-				toggleNode(e.target);
+				toggleNode(link);
 			}
 		});
 	}
@@ -201,7 +226,8 @@
 					a.style.display = '';
 				});
 				const active = $('#tree .active');
-				if (active) showPath(active, true);
+				if (active) showPath(active);
+				syncTreeIcons();
 				return;
 			}
 
@@ -212,8 +238,9 @@
 			const hits = $$('#tree li a').filter(a => a.textContent.includes(kw));
 			hits.forEach(a => {
 				a.style.display = 'block';
-				showPath(a.parentElement, false);
+				showPath(a.parentElement);
 			});
+			syncTreeIcons();
 		});
 
 		input.addEventListener('keyup', (e) => {
@@ -233,7 +260,8 @@
 	}
 
 	function initArticleToc() {
-		const box = $('.article-toc');
+		// 目录容器挂在目录树里激活节点的后面，不能取全文档第一个 .article-toc
+		const box = $('#tree .active + .article-toc');
 		const content = $('#article-content');
 		if (!box || !content) return;
 
@@ -323,6 +351,66 @@
 	}
 
 	/* ---------------------------------------------------------
+	   Mermaid 图表
+	   渲染器会输出 <pre><code class="language-mermaid">，
+	   这里换成 <div class="mermaid"> 再交给 mermaid.js 渲染。
+	   --------------------------------------------------------- */
+	function initMermaid() {
+		const cfg = (window.__hybrid && window.__hybrid.mermaid) || {};
+		if (!cfg.enable) return;
+
+		const codes = $$('code.language-mermaid, code.lang-mermaid');
+		if (!codes.length) return;
+
+		codes.forEach(code => {
+			const pre = code.closest('pre') || code;
+			const box = document.createElement('div');
+			box.className = 'mermaid';
+			box.setAttribute('data-loaded', 'false');
+			// prism 会把代码按行拆成 <span class="line"> 并用 <br> 分隔，
+			// 直接取 textContent 会把所有行连成一行，mermaid 会解析失败
+			const lineEls = $$('.line', code);
+			const src = lineEls.length
+				? lineEls.map(el => el.textContent).join('\n')
+				: code.textContent;
+			// 原始源码留一份，深浅色切换后需要重新渲染
+			box.setAttribute('data-src', src);
+			box.textContent = src;
+			pre.parentNode.replaceChild(box, pre);
+		});
+
+		const isDark = () => {
+			const root = document.documentElement;
+			return root.getAttribute('data-scheme') === 'dark' ||
+				(root.getAttribute('data-scheme') === 'auto' &&
+					window.matchMedia('(prefers-color-scheme: dark)').matches);
+		};
+
+		const render = async () => {
+			const url = 'https://cdn.jsdelivr.net/npm/mermaid@' + cfg.version + '/dist/mermaid.esm.min.mjs';
+			const mermaid = (await import(url)).default;
+			mermaid.initialize({
+				startOnLoad: false,
+				theme: isDark() ? (cfg.theme_dark || 'dark') : (cfg.theme || 'default'),
+				securityLevel: 'strict'
+			});
+			await mermaid.run({ querySelector: '.mermaid' });
+			$$('.mermaid').forEach(el => el.setAttribute('data-loaded', 'true'));
+		};
+
+		render().catch(err => console.error('[hybrid] mermaid 渲染失败:', err));
+
+		// 深浅色切换后需要按新主题重画
+		window.addEventListener('hybrid:schemechange', () => {
+			$$('.mermaid').forEach(el => {
+				el.removeAttribute('data-processed');
+				el.innerHTML = el.getAttribute('data-src') || '';
+			});
+			render().catch(() => { });
+		});
+	}
+
+	/* ---------------------------------------------------------
 	   代码块复制
 	   --------------------------------------------------------- */
 	function initCodeCopy() {
@@ -368,5 +456,6 @@
 	initTreeSearch();
 	initArticleToc();
 	initLightbox();
+	initMermaid();
 	initCodeCopy();
 })();

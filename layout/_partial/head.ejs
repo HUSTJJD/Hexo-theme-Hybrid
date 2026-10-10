@@ -26,6 +26,18 @@
 	<%- css('css/base.css') %>
 	<%- css('css/home.css') %>
 	<%- css('css/wiki.css') %>
+	<%- css('css/markdown.css') %>
+	<%- css('css/markdown.css') %>
+
+	<!-- 数学公式（KaTeX）：只在启用时加载 -->
+	<% if (theme.markdown && theme.markdown.katex && theme.markdown.katex.enable){ %>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@<%= theme.markdown.katex.version %>/dist/katex.min.css">
+	<% } %>
+
+	<!-- 数学公式样式：构建期已渲染成 HTML，这里只补 CSS -->
+	<% if (theme.markdown && theme.markdown.math && theme.markdown.math.enable){ %>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@<%= theme.markdown.math.version %>/dist/katex.min.css">
+	<% } %>
 
 	<!-- 自定义样式 -->
 	<% if (theme.custom.css.path){ %>
@@ -40,6 +52,17 @@
 			<%- js(item) %>
 		<% }); %>
 	<% } %>
+
+	<!-- 主题运行时配置，供 js/main.js 读取 -->
+	<script>
+		window.__hybrid = {
+			mermaid: {
+				enable: <%= !!(theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.enable) %>,
+				version: '<%= (theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.version) || "12.1.0" %>',
+				theme: '<%= (theme.markdown && theme.markdown.mermaid && theme.markdown.mermaid.theme) || "default" %>'
+			}
+		};
+	</script>
 
 	<!-- 分析 -->
 	<% if (theme.analytics.baidu.enable && theme.analytics.baidu.hm){ %>

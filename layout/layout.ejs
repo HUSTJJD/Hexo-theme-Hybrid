@@ -42,6 +42,13 @@
 	<%- partial('_partial/footer') %>
 	<%- partial('_partial/backtotop') %>
 
+	<script>
+		window.__hybrid = {
+			mermaid: <%- JSON.stringify((theme.markdown && theme.markdown.mermaid) || {}) %>,
+			math: <%- JSON.stringify((theme.markdown && theme.markdown.math) || {}) %>
+		};
+	</script>
+
 	<%- js('js/main.js') %>
 </body>
 </html>

@@ -71,6 +71,23 @@ appearance:
   hide_header_on_scroll: true
 
 #------------------------------------------------------
+# Markdown 增强
+# 语法由站点的渲染器插件提供，主题只负责样式和前端渲染。
+# 需要站点安装对应依赖，见 README 的「Markdown 增强」一节。
+#------------------------------------------------------
+markdown:
+  # Mermaid：把 ```mermaid 代码块渲染成流程图 / 时序图 / 类图…
+  mermaid:
+    enable: true
+    version: '12.1.0'
+    # default | neutral | dark | forest | base（暗色模式下自动用 dark）
+    theme: default
+  # KaTeX：行内 $...$、块级 $$...$$
+  katex:
+    enable: true
+    version: '0.19.0'
+
+#------------------------------------------------------
 # 侧边栏（目录树）
 #------------------------------------------------------
 sidebar:
@@ -120,15 +137,31 @@ notes:
   recent_count: 6
 
 #------------------------------------------------------
-# 代码块的增强配置
+# 增强 Markdown：图表与公式
+# 都交给成熟库渲染，主题只负责按需引入运行时与样式
+#------------------------------------------------------
+markdown:
+  # Mermaid：把 ```mermaid 代码块渲染成流程图 / 时序图 / 类图等
+  # 仅在页面里确实存在图表时，才从 CDN 懒加载 mermaid
+  mermaid:
+    enable: true
+    version: '12'
+    # default | neutral | forest | dark
+    theme: default
+    theme_dark: dark
+  # KaTeX：$...$ 与 $$...$$
+  # 公式由 @vscode/markdown-it-katex 在构建期渲染成 HTML，这里只补样式
+  math:
+    enable: true
+    # 需与渲染时使用的 katex 版本一致，否则类名对不上
+    version: '0.16.11'
+
+#------------------------------------------------------
+# 代码块
+# token 配色写在 css/markdown.css，跟随深浅色，不需要额外加载 CDN 主题文件
+# 高亮引擎由站点 _config.yml 的 syntax_highlighter 决定（推荐 prismjs）
 #------------------------------------------------------
 code:
-  highlight:
-    # highlight.js 样式名：https://highlightjs.org/static/demo/
-    highlightcss:
-      style: "tokyo-night-dark"
-    prismcss:
-      style: "prism"
   copyBtn:
     enable: true
 

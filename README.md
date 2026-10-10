@@ -14,6 +14,8 @@
 - **文章内目录（TOC）** —— 自动生成、滚动高亮，不依赖渲染器的锚点实现
 - **响应式** —— 宽屏侧栏常驻并可收起，窄屏变抽屉
 - **多语言** —— 内置 10 种语言文件，缺键回退到 `default.yml`
+- **增强 Markdown** —— Mermaid 图表、KaTeX 公式、提示块、任务列表、脚注、emoji、上下标、缩写，
+  全部交给成熟库渲染，主题只负责按需引入运行时与样式
 
 ## Installation
 
@@ -131,6 +133,86 @@ wiki: true     # 强制带目录树
 站点根目录建 `_config.hybrid.yml` 覆盖主题默认值，不要直接改主题目录（尤其用 submodule 时）。
 可配置项见 [`_config.yml`](_config.yml)：导航菜单、社交图标、外观、
 分类卡片、代码高亮、版权、页脚统计、giscus 评论、百度/谷歌统计、自定义 CSS/JS。
+
+### 5. 增强 Markdown
+
+这些能力来自 markdown-it 插件（构建期渲染），主题负责呈现与按需加载运行时。
+需要站点先安装依赖：
+
+```bash
+npm i hexo-renderer-markdown-it markdown-it-emoji markdown-it-footnote \
+      markdown-it-task-lists markdown-it-container markdown-it-deflist \
+      markdown-it-abbr markdown-it-sub markdown-it-sup markdown-it-ins \
+      markdown-it-mark @vscode/markdown-it-katex
+```
+
+并在站点 `_config.yml` 启用：
+
+```yaml
+markdown:
+  plugins:
+    - markdown-it-abbr
+    - markdown-it-deflist
+    - markdown-it-emoji
+    - markdown-it-footnote
+    - markdown-it-ins
+    - markdown-it-mark
+    - markdown-it-sub
+    - markdown-it-sup
+    - markdown-it-task-lists
+    - name: markdown-it-container
+      options: tip
+    - name: markdown-it-container
+      options: warning
+    - name: markdown-it-container
+      options: danger
+    - name: markdown-it-container
+      options: info
+    - '@vscode/markdown-it-katex'
+```
+
+之后即可使用：
+
+````markdown
+```mermaid
+graph TD
+  A[开始] --> B{判断}
+  B -->|是| C[结束]
+```
+
+行内公式 $E = mc^2$，独立公式：
+
+$$
+\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}
+$$
+
+:::tip
+提示块，同样支持 :::info / :::warning / :::danger
+:::
+
+- [x] 已完成的任务
+- [ ] 待办任务
+
+脚注[^1] 与 emoji :tada:
+
+[^1]: 脚注内容
+````
+
+Mermaid 只在页面**确实存在图表时**才从 CDN 加载（约 1 MB），没有图表的页面不会引入。
+深浅色切换时图表会按 `theme` / `theme_dark` 重新绘制。
+
+代码高亮建议用 **prismjs**：
+
+```yaml
+syntax_highlighter: prismjs
+prismjs:
+  enable: true
+  line_number: true
+```
+
+prism 有 597 个语言组件（含 `hlsl`、`wgsl`、`unrealscript`、`glsl`），
+且 hexo 会按需加载对应组件，新增语言无需改配置。
+highlight.js 只有 192 种且缺少 hlsl / wgsl。
 
 ## 与 Node-Tree 的差异
 

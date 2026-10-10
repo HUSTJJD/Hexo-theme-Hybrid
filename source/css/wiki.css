@@ -94,6 +94,8 @@ body.sidebar-collapsed #content { margin-left: 0; margin-right: auto; }
 }
 #tree li a:hover { background: var(--c-bg); color: var(--c-text); }
 
+/* active 落在 li（文件）或 a（目录）上，两种情况都要高亮 */
+#tree li.file.active > a,
 #tree li.file > a.active,
 #tree li.directory > a.active {
 	background: var(--c-accent-soft);
@@ -102,7 +104,18 @@ body.sidebar-collapsed #content { margin-left: 0; margin-right: auto; }
 }
 
 #tree li.directory > a { font-weight: 600; color: var(--c-text); }
-#tree li.directory > a i { margin-right: 5px; font-size: 12px; color: var(--c-text-mute); }
+
+/* 折叠图标即点击热区，单独撑开一点，避免误点到标题触发跳转 */
+#tree li.directory > a > i {
+	display: inline-block;
+	width: 20px;
+	margin-right: 4px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--c-text-mute);
+	cursor: pointer;
+}
+#tree li.directory > a > i:hover { color: var(--c-accent); }
 #tree li.file > a i { display: none; }
 
 /* 文章内目录（挂在激活节点下方） */
