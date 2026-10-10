@@ -113,9 +113,26 @@
 							const hasIndex = !!parent;
 							const indexUrl = hasIndex ? url_for(parent.post.path) : '';
 							// 索引页的路径是「目录路径 + / + 目录名」
-							const dirActive = hasIndex && (nodePath + '/' + node.title) === pagePath;
+							const indexPath = nodePath + '/' + node.title;
+							const dirActive = hasIndex && indexPath === pagePath;
+							// 目录下只有索引笔记、没有其它子项时，它本质就是一个页面：
+							// 按文件节点渲染，不给展开图标（否则点了没有任何反应），点击直接打开索引笔记
+							const leafDir = hasIndex && childrens.length === 0;
 			%>
 							<ul>
+			<% 					if(leafDir){ %>
+									<li class="file<%- (is_post() && parent.post._id == page._id) || indexPath === pagePath ? ' active' : '' %>">
+										<%# relative_link 下指向当前页的链接会是空串，这里就不写 href %>
+										<a<% if (indexUrl) { %> href="<%- indexUrl %>"<% } %> title="<%- indexPath %>">
+										<% if (theme.sidebar && theme.sidebar.usePostTitle) { %>
+											<%- parent.post.title || node.title %>
+										<% } else { %>
+											<%- node.title %>
+										<% } %>
+										</a>
+									</li>
+									<div class="article-toc" style="display: none;"></div>
+			<% 					} else { %>
 								<li class="directory">
 			<% 						if(hasIndex){ %>
 										<%# relative_link 下指向当前页的链接会是空串，这里就不写 href %>
@@ -138,6 +155,7 @@
 			<% 						} %>
 									<%- showTree(childrens, nodePath) %>
 								</li>
+			<% 					} %>
 							</ul>
 			<%
 						}

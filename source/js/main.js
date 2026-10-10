@@ -226,6 +226,18 @@
 		} catch (e) { /* 隐私模式下忽略 */ }
 	}
 
+	// 换页后侧栏会回到顶部，把当前节点滚进可视区，省得手动找
+	function revealActive() {
+		const sidebar = $('#sidebar');
+		const active = $('#tree .active');
+		if (!sidebar || !active) return;
+		const box = sidebar.getBoundingClientRect();
+		if (!box.height) return;
+		const rect = active.getBoundingClientRect();
+		if (rect.top >= box.top && rect.bottom <= box.bottom) return;
+		sidebar.scrollTop += rect.top - box.top - box.height / 2 + rect.height / 2;
+	}
+
 	// 恢复上次展开的节点（连同祖先链），再展开到当前页面所在节点
 	function restoreTreeView() {
 		const saved = new Set(readTreeState());
@@ -237,6 +249,7 @@
 		const active = $('#tree .active');
 		if (active) showPath(active);
 		syncTreeIcons();
+		revealActive();
 	}
 
 	function initTree() {
@@ -260,6 +273,9 @@
 
 			const li = link.closest('li');
 			if (!li || !li.classList.contains('directory')) return;
+
+			// 没有任何子列表可展开时退回原生跳转，避免「点了没反应」
+			if (!childUls(link).length) return;
 
 			e.preventDefault();
 			setExpanded(link, !isExpanded(link));

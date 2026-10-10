@@ -4,6 +4,12 @@
 	const brandName = theme.brand.name || config.title;
 	const avatar = theme.brand.avatar ? (theme.favicon.light || theme.favicon.dark) : false;
 	const currentPath = '/' + (page.path || '').replace(/index\.html$/, '');
+	const notesPrefix = url_for('/notes/').replace(/\/$/, '');
+	// 文章页的 permalink 是 :abbrlink.html，落在站点根目录、没有 /notes/ 前缀，
+	// 但语义上属于笔记区，所以文章页也要让「笔记」菜单高亮
+	const inNotes = is_post() ||
+		currentPath.indexOf(notesPrefix) === 0 ||
+		(page.path || '').indexOf('notes/') === 0;
 %>
 <header id="header">
 	<a class="brand" href="<%= url_for('/') %>">
@@ -17,8 +23,11 @@
 		<% Object.keys(menu).forEach(function(name){
 			const item = menu[name] || {};
 			const url = url_for(item.url || '/');
-			const active = item.url === '/' ? (page.path === 'index.html' || page.path === '')
-				: currentPath.indexOf(url_for(item.url).replace(/\/$/, '')) === 0;
+			const active = item.url === '/'
+				? (page.path === 'index.html' || page.path === '')
+				: item.url === '/notes/'
+					? inNotes
+					: currentPath.indexOf(url_for(item.url).replace(/\/$/, '')) === 0;
 		%>
 			<a class="menu-item<%- active ? ' active' : '' %>" href="<%= url %>">
 				<% if (item.icon){ %><i class="fa fa-<%= item.icon %>" aria-hidden="true"></i><% } %>
