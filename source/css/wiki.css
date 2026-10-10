@@ -18,9 +18,26 @@
 	overflow-y: auto;
 	overscroll-behavior: contain;
 	transition: transform .25s ease;
+
+	/* 滚动条：细、低对比，鼠标不在侧栏上时完全隐去，只在滚动/悬停时浮现 */
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent;
 }
+#sidebar:hover, #sidebar:focus-within { scrollbar-color: var(--c-border-strong) transparent; }
+
+#sidebar::-webkit-scrollbar { width: 6px; height: 6px; }
+#sidebar::-webkit-scrollbar-track { background: transparent; }
+#sidebar::-webkit-scrollbar-thumb {
+	background: transparent;
+	border-radius: 999px;
+	transition: background-color .2s ease;
+}
+#sidebar:hover::-webkit-scrollbar-thumb { background: var(--c-border-strong); }
+#sidebar::-webkit-scrollbar-thumb:hover { background: var(--c-text-mute); }
+
 #sidebar.is-collapsed { transform: translateX(-100%); }
 
+/* 开合按钮：收起时浮在左下角，展开时贴在侧栏右边缘 */
 #sidebar-toggle {
 	position: fixed;
 	left: 14px; bottom: 14px;
@@ -33,9 +50,10 @@
 	color: var(--c-text-soft);
 	cursor: pointer;
 	display: inline-flex; align-items: center; justify-content: center;
-	transition: color .18s ease, transform .18s ease;
+	transition: color .18s ease, transform .18s ease, left .25s ease, background-color .18s ease;
 }
 #sidebar-toggle:hover { color: var(--c-accent); transform: scale(1.05); }
+body.mode-wiki:not(.sidebar-collapsed) #sidebar-toggle { left: calc(var(--sidebar-w) - 12px); }
 
 /* ------------------------------------------------------------
    内容区：在「侧栏右侧的剩余空间」里居中

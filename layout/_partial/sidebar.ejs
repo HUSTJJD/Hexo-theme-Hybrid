@@ -1,8 +1,7 @@
+<!-- 开合按钮在文件末尾、#sidebar 之外：#sidebar.is-collapsed 会加 transform，
+     而带 transform 的元素会成为内部 position:fixed 子元素的包含块，
+     按钮会被一起移出屏幕，变成「能收起、没法展开」 -->
 <aside id="sidebar" aria-label="笔记目录">
-	<button id="sidebar-toggle" class="toggle" type="button" aria-label="收起目录">
-		<i class="fa fa-arrow-right" aria-hidden="true"></i>
-	</button>
-
 	<div id="site-toc">
 		<a class="toc-home" href="<%= url_for('/notes/') %>">
 			<i class="fa fa-sitemap" aria-hidden="true"></i>
@@ -166,3 +165,7 @@
 		</div>
 	</div>
 </aside>
+
+<button id="sidebar-toggle" class="toggle" type="button" aria-label="收起目录" title="收起目录">
+	<i class="fa fa-arrow-right" aria-hidden="true"></i>
+</button>

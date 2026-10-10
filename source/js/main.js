@@ -106,11 +106,15 @@
 		const setCollapsed = (collapsed) => {
 			sidebar.classList.toggle('is-collapsed', collapsed);
 			document.body.classList.toggle('sidebar-collapsed', collapsed);
+
 			const icon = toggle.querySelector('i');
 			if (icon) {
 				icon.classList.toggle('fa-arrow-right', collapsed);
-				icon.classList.toggle('fa-times', !collapsed);
+				icon.classList.toggle('fa-arrow-left', !collapsed);
 			}
+			const label = collapsed ? '展开目录' : '收起目录';
+			toggle.setAttribute('aria-label', label);
+			toggle.setAttribute('title', label);
 		};
 
 		// null = 跟随窗口宽度；true/false = 用户手动指定
