@@ -26,24 +26,23 @@ brand:
 # 导航菜单
 # icon 使用 font-awesome 4.7 的类名（不含 fa- 前缀）
 #------------------------------------------------------
+# 个人主页形态：只留三个入口。
+# 分类 / 标签是笔记区的检索维度，入口在 /notes/ 里，不占顶级导航；
+# 关于与首页内容完全重复，不单列。
 menu:
   首页:
     url: /
     icon: home
+  研究:
+    url: /#research
+    icon: flask
   笔记:
     url: /notes/
     icon: sitemap
-  分类:
-    url: /categories/
-    icon: folder-open
-  标签:
-    url: /tags/
-    icon: tags
-  关于:
-    url: /about/
-    icon: user
 
 # 顶栏右侧外链图标
+# 注意：GitHub / 邮箱这类个人信息不要写在这里，主题是共用的。
+# 站点自己的值放根目录 _config.hybrid.yml（Hexo 官方的 alternate theme config）。
 social:
   github:
     enable: false

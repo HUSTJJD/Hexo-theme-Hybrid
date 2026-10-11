@@ -1,0 +1,107 @@
+/* ============================================================
+   代码块语法高亮配色（Prism token）
+   站点级覆盖：由 _config.hybrid.yml 的 custom.css.path 引入
+   颜色全部取自 css/tokens.css 的调色板变量，深浅色自动跟随
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   行号
+   prismjs 的 line_number 开启后，会输出 <pre class="line-numbers">
+   并在 <code> 末尾追加 <span class="line-numbers-rows">
+   ------------------------------------------------------------ */
+.prose pre[class*="language-"].line-numbers {
+	position: relative;
+	padding-left: 4em;
+	counter-reset: linenumber;
+}
+
+.prose pre[class*="language-"] > code {
+	display: block;
+	position: relative;
+}
+
+.prose .line-numbers .line-numbers-rows {
+	position: absolute;
+	top: 0;
+	left: -4em;
+	width: 3em;
+	font-size: 100%;
+	letter-spacing: -1px;
+	border-right: 1px solid var(--c-border);
+	color: var(--c-text-mute);
+	text-align: right;
+	pointer-events: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.prose .line-numbers-rows > span {
+	display: block;
+	counter-increment: linenumber;
+}
+
+.prose .line-numbers-rows > span::before {
+	content: counter(linenumber);
+	display: block;
+	padding-right: .8em;
+}
+
+/* ------------------------------------------------------------
+   token 配色
+   按 Prism 的标准 token 类型分组，映射到主题色板
+   ------------------------------------------------------------ */
+
+/* 注释 */
+.prose .token.comment,
+.prose .token.prolog,
+.prose .token.doctype,
+.prose .token.cdata {
+	color: var(--c-text-mute);
+	font-style: italic;
+}
+
+/* 标点与命名空间 */
+.prose .token.punctuation { color: var(--c-text-soft); }
+.prose .token.namespace { opacity: .7; }
+
+/* 属性、标签、符号 */
+.prose .token.property,
+.prose .token.tag,
+.prose .token.symbol,
+.prose .token.deleted { color: var(--c-rose); }
+
+/* 数值与布尔 */
+.prose .token.boolean,
+.prose .token.number,
+.prose .token.constant { color: var(--c-amber); }
+
+/* 字符串与选择器 */
+.prose .token.selector,
+.prose .token.attr-name,
+.prose .token.string,
+.prose .token.char,
+.prose .token.builtin,
+.prose .token.inserted { color: var(--c-green); }
+
+/* 运算符、实体、变量 */
+.prose .token.operator,
+.prose .token.entity,
+.prose .token.url,
+.prose .token.variable { color: var(--c-text-soft); }
+
+/* 关键字 */
+.prose .token.atrule,
+.prose .token.attr-value,
+.prose .token.keyword { color: var(--c-violet); }
+
+/* 函数与类名 */
+.prose .token.function,
+.prose .token.class-name { color: var(--c-blue); }
+
+/* 正则与强调 */
+.prose .token.regex,
+.prose .token.important { color: var(--c-amber); }
+
+.prose .token.important,
+.prose .token.bold { font-weight: 700; }
+.prose .token.italic { font-style: italic; }

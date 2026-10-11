@@ -15,7 +15,8 @@
 
 			<div class="hero-text">
 				<h1 class="hero-name"><%= profile.name || config.author %></h1>
-				<p class="hero-tagline"><%= profile.tagline || config.subtitle %></p>
+				<% const tagline = profile.tagline || config.subtitle || ''; %>
+				<% if (tagline){ %><p class="hero-tagline"><%= tagline %></p><% } %>
 
 				<% if (profile.meta && profile.meta.length){ %>
 					<ul class="hero-meta">

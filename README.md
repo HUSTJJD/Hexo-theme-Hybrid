@@ -153,7 +153,14 @@ wiki: true     # 强制带目录树
 
 ### 5. 配置
 
-站点根目录建 `_config.hybrid.yml` 覆盖主题默认值，不要直接改主题目录（尤其用 submodule 时）。
+定制直接改主题源码（`_config.yml`、`layout/`、`source/css/`、`scripts/`），**不要用站点级补丁**
+（根目录 `scripts/*.js` 覆盖钩子、`custom.css.path` 注入额外 CSS）。
+理由：Hexo 的主题配置是 deepMerge，站点级只能覆盖键值、删不掉主题自带的项；靠 filter 和
+额外 CSS 去打补丁，等于把一份定制拆散在三四个地方，改一处要记着另外几处。
+
+唯一例外是**站点专属且不该进共用主题的信息**（站点图标、GitHub / 邮箱等外链账号）：
+放站点根目录的 `_config.hybrid.yml`。
+
 可配置项见 [`_config.yml`](_config.yml)：导航菜单、社交图标、外观、
 分类分区、代码高亮、版权、页脚统计、giscus 评论、百度/谷歌统计、自定义 CSS/JS。
 
