@@ -16,7 +16,7 @@
 # 站点发布新版（结构调整 / 样式重构 / JS 逻辑变更）时把它 +1：
 #   1. css / js 的 URL 会带上 ?v=<version>，浏览器重新拉取，不再吃旧文件缓存
 #   2. 旧版本的本地缓存会被丢弃，深浅色与侧栏偏好自动迁移到新版本
-version: '2'
+version: '3'
 
 #------------------------------------------------------
 # 站点标识
@@ -90,6 +90,19 @@ sidebar:
   usePostTitle: false
   # 桌面端默认展开侧边栏
   default_open: true
+  # 指定目录的子节点顺序；未列出的节点继续按“目录优先 + 名称”排序
+  order:
+    'Base Knowledge':
+      - Mathematics
+      - Computer
+      - Artificial Intelligence
+    'Base Knowledge/Computer':
+      - Computer Architecture
+      - Operating System
+      - Computer Network
+      - Data Structures & Algorithm
+      - Compilation Principle
+      - Computer Graphics
   # 搜索框：tree 过滤目录树，google/baidu 跳转站外搜索
   search:
     mode: tree

@@ -44,14 +44,25 @@
 					});
 				});
 
-				const sortedChildren = (node, skip) => Array.from(node.children.values())
+				const navigationOrder = (theme.sidebar && theme.sidebar.order) || {};
+				const sortedChildren = (node, skip) => {
+					const preferred = Array.isArray(navigationOrder[node.path])
+						? navigationOrder[node.path] : [];
+					return Array.from(node.children.values())
 					.filter(function (child) { return child !== skip; })
 					.sort(function (a, b) {
+						const aRank = preferred.indexOf(a.name);
+						const bRank = preferred.indexOf(b.name);
+						const aOrdered = aRank !== -1;
+						const bOrdered = bRank !== -1;
+						if (aOrdered !== bOrdered) return aOrdered ? -1 : 1;
+						if (aOrdered && aRank !== bRank) return aRank - bRank;
 						const aDirectory = a.children.size > 0;
 						const bDirectory = b.children.size > 0;
 						if (aDirectory !== bDirectory) return aDirectory ? -1 : 1;
 						return a.name.localeCompare(b.name);
 					});
+				};
 
 				const currentId = page && page._id;
 				let branchId = 0;
@@ -76,21 +87,14 @@
 					<div class="tree-row">
 			<% if (isDirectory) { %>
 						<button class="tree-toggle" type="button" aria-expanded="false"
-							aria-controls="<%= childId %>" title="<%= node.path %>">
+							aria-controls="<%= childId %>" aria-label="<%= label %>" title="<%= node.path %>">
 							<i class="fa fa-angle-right" aria-hidden="true"></i>
-							<span><%= label %></span>
 						</button>
 						<% if (indexPost) { %>
-							<% if (href) { %>
-								<a class="dir-index" href="<%- href %>" title="<%= __('toc.index_note') %>"
-									aria-label="<%= __('toc.index_note') %>">
-									<i class="fa fa-file-text-o" aria-hidden="true"></i>
-								</a>
-							<% } else { %>
-								<span class="dir-index is-current" title="<%= __('toc.index_note') %>" aria-current="page">
-									<i class="fa fa-file-text-o" aria-hidden="true"></i>
-								</span>
-							<% } %>
+							<a class="tree-link"<% if (href) { %> href="<%- href %>"<% } %>
+								title="<%= node.path %>"<% if (active) { %> aria-current="page"<% } %>><%= label %></a>
+						<% } else { %>
+							<button class="tree-folder-label" type="button" title="<%= node.path %>"><%= label %></button>
 						<% } %>
 			<% } else if (indexPost) { %>
 						<a class="tree-link"<% if (href) { %> href="<%- href %>"<% } %>

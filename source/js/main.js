@@ -311,8 +311,11 @@
 		restoreTreeView();
 
 		tree.addEventListener('click', (e) => {
-			const button = e.target && e.target.closest ? e.target.closest('.tree-toggle') : null;
-			if (!button || !tree.contains(button)) return;
+			const trigger = e.target && e.target.closest
+				? e.target.closest('.tree-toggle, .tree-folder-label') : null;
+			if (!trigger || !tree.contains(trigger)) return;
+			const button = trigger.classList.contains('tree-toggle')
+				? trigger : trigger.parentElement.querySelector('.tree-toggle');
 			setExpanded(button, !isExpanded(button));
 			saveTreeState();
 		});

@@ -130,7 +130,8 @@ body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
 #tree .tree-node.active > .tree-row { background: var(--c-accent-soft); }
 
 #tree .tree-link,
-#tree .tree-toggle {
+#tree .tree-toggle,
+#tree .tree-folder-label {
 	min-width: 0;
 	min-height: 30px;
 	border: 0;
@@ -143,23 +144,29 @@ body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
 #tree .tree-link {
 	display: block;
 	flex: 1;
-	padding: 5px 8px 5px 29px;
+	padding: 5px 8px 5px 1px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+#tree .file > .tree-row > .tree-link { padding-left: 29px; }
 #tree .tree-toggle {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	flex: 1;
-	gap: 5px;
-	padding: 5px 4px 5px 8px;
+	justify-content: center;
+	flex: 0 0 28px;
+	width: 28px;
+	padding: 5px 4px;
 	cursor: pointer;
 }
-#tree .tree-toggle > span {
+#tree .tree-folder-label {
+	display: block;
+	flex: 1;
+	padding: 5px 8px 5px 1px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	cursor: pointer;
 }
 #tree .tree-toggle > i {
 	flex: 0 0 16px;
@@ -168,30 +175,13 @@ body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
 	font-size: 12px;
 	color: var(--c-text-mute);
 }
-#tree .directory > .tree-row .tree-toggle { font-weight: 600; color: var(--c-text); }
+#tree .directory > .tree-row .tree-link,
+#tree .directory > .tree-row .tree-folder-label { font-weight: 600; color: var(--c-text); }
 #tree .tree-node.active > .tree-row .tree-link,
-#tree .tree-node.active > .tree-row .tree-toggle { color: var(--c-accent); font-weight: 600; }
+#tree .tree-node.active > .tree-row .tree-folder-label { color: var(--c-accent); font-weight: 600; }
 #tree .tree-link:hover,
-#tree .tree-toggle:hover { color: var(--c-text); }
-
-/* 目录行负责开合，右侧文件图标单独打开该目录的索引笔记。 */
-#tree .dir-index {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	flex: 0 0 26px;
-	width: 26px;
-	height: 26px;
-	margin-right: 2px;
-	border-radius: var(--radius-sm);
-	font-size: 11px;
-	color: var(--c-text-mute);
-	opacity: .45;
-	transition: opacity .15s ease, color .15s ease, background-color .15s ease;
-}
-#tree .tree-row:hover > .dir-index { opacity: .9; }
-#tree .dir-index:hover { background: var(--c-surface); color: var(--c-accent); opacity: 1; }
-#tree .dir-index.is-current { color: var(--c-accent); opacity: .8; }
+#tree .tree-toggle:hover,
+#tree .tree-folder-label:hover { color: var(--c-text); }
 
 /* 文章内目录沿标题级别建立真实的嵌套列表。 */
 .article-toc { padding: 3px 0 7px 20px; font-size: 12.5px; }
