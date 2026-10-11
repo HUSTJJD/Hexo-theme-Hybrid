@@ -2,24 +2,29 @@
    design tokens
    浅色为默认；深色通过 html[data-scheme] 生效。
    data-scheme="auto" 时跟随系统偏好，JS 可切到 light / dark 强制。
+
+   两套色板各自独立，不要求互为反色：
+     浅色 = 冷蓝纸质（参考学术主页，白底 + 深海军蓝字 + 蓝色强调）
+     深色 = 电子阅读器（暖中性底 + 暖白字，压低对比与蓝光，适合长读笔记）
    ============================================================ */
 
 :root {
-	/* 色板 */
-	--c-bg: #f7f6f3;
-	--c-bg-soft: #f1efe9;
+	/* 色板：浅色 */
+	--c-bg: #f7faff;
+	--c-bg-soft: #eef4fb;
 	--c-surface: #ffffff;
-	--c-surface-2: #faf9f6;
-	--c-border: #e4e1d9;
-	--c-border-strong: #d3cec3;
+	--c-surface-2: #f4f8fd;
+	--c-border: #dde4f1;
+	--c-border-strong: #c3d2e8;
 
-	--c-text: #232429;
-	--c-text-soft: #55585f;
-	--c-text-mute: #8b8e96;
+	--c-text: #13233a;
+	--c-text-soft: #5a6678;
+	--c-text-mute: #7c8698;
 
-	--c-accent: #1d824c;
-	--c-accent-soft: #e7f2ec;
-	--c-accent-text: #146037;
+	--c-accent: #0e419c;
+	--c-accent-soft: #dce8f8;
+	--c-accent-text: #082e73;
+	--c-on-accent: #ffffff;
 
 	--c-mark: #fdf3d8;
 
@@ -40,9 +45,9 @@
 	--radius: 12px;
 	--radius-lg: 18px;
 
-	--shadow-sm: 0 1px 2px rgba(24, 24, 28, .05);
-	--shadow: 0 4px 16px rgba(24, 24, 28, .07);
-	--shadow-lg: 0 12px 36px rgba(24, 24, 28, .1);
+	--shadow-sm: 0 1px 2px rgba(8, 46, 115, .06);
+	--shadow: 0 4px 16px rgba(8, 46, 115, .1);
+	--shadow-lg: 0 12px 36px rgba(8, 46, 115, .14);
 
 	--sidebar-w: 300px;
 	--header-h: 60px;
@@ -61,33 +66,36 @@
 /* 深色：跟随系统 */
 @media (prefers-color-scheme: dark) {
 	html[data-scheme="auto"] {
-		--c-bg: #15161a;
-		--c-bg-soft: #191b20;
-		--c-surface: #1c1e24;
-		--c-surface-2: #21242b;
-		--c-border: #2a2d35;
-		--c-border-strong: #3a3e48;
+		color-scheme: dark;
 
-		--c-text: #e5e6e9;
-		--c-text-soft: #a8acb6;
-		--c-text-mute: #767b86;
+		--c-bg: #1c1917;
+		--c-bg-soft: #211e1b;
+		--c-surface: #242120;
+		--c-surface-2: #2a2724;
+		--c-border: #35312d;
+		--c-border-strong: #46413b;
 
-		--c-accent: #4ea87a;
-		--c-accent-soft: #1c2c24;
-		--c-accent-text: #7cc79c;
+		--c-text: #dcd5cb;
+		--c-text-soft: #a8a096;
+		--c-text-mute: #8b8378;
 
-		--c-mark: #3d3520;
+		--c-accent: #caa06a;
+		--c-accent-soft: #2f2a1f;
+		--c-accent-text: #e0bd85;
+		--c-on-accent: #1a1512;
 
-		--c-violet: #a78bfa;
-		--c-violet-soft: #26223a;
+		--c-mark: #3b342a;
+
+		--c-violet: #a08cd0;
+		--c-violet-soft: #2b2536;
 		--c-amber: #d99a4e;
-		--c-amber-soft: #322718;
-		--c-blue: #6aa5e0;
-		--c-blue-soft: #1a2735;
-		--c-green: #5cb98a;
-		--c-green-soft: #1b2c23;
-		--c-rose: #e07a88;
-		--c-rose-soft: #332022;
+		--c-amber-soft: #332a1e;
+		--c-blue: #6d9fd0;
+		--c-blue-soft: #1e2733;
+		--c-green: #6fae8a;
+		--c-green-soft: #1f2c26;
+		--c-rose: #d4838c;
+		--c-rose-soft: #332426;
 
 		--shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
 		--shadow: 0 4px 16px rgba(0, 0, 0, .35);
@@ -97,33 +105,36 @@
 
 /* 深色：手动强制 */
 html[data-scheme="dark"] {
-	--c-bg: #15161a;
-	--c-bg-soft: #191b20;
-	--c-surface: #1c1e24;
-	--c-surface-2: #21242b;
-	--c-border: #2a2d35;
-	--c-border-strong: #3a3e48;
+	color-scheme: dark;
 
-	--c-text: #e5e6e9;
-	--c-text-soft: #a8acb6;
-	--c-text-mute: #767b86;
+	--c-bg: #1c1917;
+	--c-bg-soft: #211e1b;
+	--c-surface: #242120;
+	--c-surface-2: #2a2724;
+	--c-border: #35312d;
+	--c-border-strong: #46413b;
 
-	--c-accent: #4ea87a;
-	--c-accent-soft: #1c2c24;
-	--c-accent-text: #7cc79c;
+	--c-text: #dcd5cb;
+	--c-text-soft: #a8a096;
+	--c-text-mute: #8b8378;
 
-	--c-mark: #3d3520;
+	--c-accent: #caa06a;
+	--c-accent-soft: #2f2a1f;
+	--c-accent-text: #e0bd85;
+	--c-on-accent: #1a1512;
 
-	--c-violet: #a78bfa;
-	--c-violet-soft: #26223a;
+	--c-mark: #3b342a;
+
+	--c-violet: #a08cd0;
+	--c-violet-soft: #2b2536;
 	--c-amber: #d99a4e;
-	--c-amber-soft: #322718;
-	--c-blue: #6aa5e0;
-	--c-blue-soft: #1a2735;
-	--c-green: #5cb98a;
-	--c-green-soft: #1b2c23;
-	--c-rose: #e07a88;
-	--c-rose-soft: #332022;
+	--c-amber-soft: #332a1e;
+	--c-blue: #6d9fd0;
+	--c-blue-soft: #1e2733;
+	--c-green: #6fae8a;
+	--c-green-soft: #1f2c26;
+	--c-rose: #d4838c;
+	--c-rose-soft: #332426;
 
 	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
 	--shadow: 0 4px 16px rgba(0, 0, 0, .35);

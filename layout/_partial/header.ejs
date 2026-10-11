@@ -10,8 +10,10 @@
 	const inNotes = is_post() ||
 		currentPath.indexOf(notesPrefix) === 0 ||
 		(page.path || '').indexOf('notes/') === 0;
+	// 顶栏是否随向下滚动隐藏，由 main.js 读取
+	const autoHide = !theme.appearance || theme.appearance.hide_header_on_scroll !== false;
 %>
-<header id="header">
+<header id="header" data-autohide="<%= autoHide ? 'true' : 'false' %>">
 	<a class="brand" href="<%= url_for('/') %>">
 		<% if (avatar){ %>
 			<img class="brand-avatar" src="<%= url_for(avatar) %>" alt="<%= brandName %>">

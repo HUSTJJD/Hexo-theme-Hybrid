@@ -169,7 +169,7 @@ body.backdrop-dots::before {
 	transition: transform .15s ease, box-shadow .18s ease, background-color .18s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-primary { background: var(--c-accent); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary { background: var(--c-accent); color: var(--c-on-accent); box-shadow: var(--shadow-sm); }
 .btn-primary:hover { box-shadow: var(--shadow); }
 .btn-ghost { background: var(--c-surface); border-color: var(--c-border); color: var(--c-text); }
 .btn-ghost:hover { border-color: var(--c-border-strong); }
@@ -274,7 +274,7 @@ body.backdrop-dots::before {
 	background: var(--c-surface); font-size: 13px; color: var(--c-text-soft);
 }
 .pagination a:hover { border-color: var(--c-accent); color: var(--c-accent); }
-.pagination .current { background: var(--c-accent); border-color: var(--c-accent); color: #fff; font-weight: 600; }
+.pagination .current { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-on-accent); font-weight: 600; }
 
 /* ------------------------------------------------------------
    页脚 / 回到顶部
@@ -292,9 +292,7 @@ body.backdrop-dots::before {
 	gap: 16px; flex-wrap: wrap;
 	font-size: 13px; color: var(--c-text-mute);
 }
-.footer-left, .footer-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.footer-right a { color: var(--c-text-soft); }
-.footer-right a:hover { color: var(--c-accent); }
+.footer-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 
 #backtotop {
 	position: fixed; right: 22px; bottom: 22px; z-index: 40;

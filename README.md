@@ -2,14 +2,14 @@
 
 把**个人主页**和 **Wiki 式笔记库**放进同一个 Hexo 主题。
 
-站点首页是你的个人主页（名片、技能、经历时间线、最近更新），
+站点首页是你的个人主页（名片、自述、最近更新），
 笔记区则是另一套页面：左侧一棵目录树，展开即读。两套形态共用同一套设计系统。
 
 ## Features
 
 - **三种页面模式** —— `home` 全宽个人主页 / `page` 常规页 / `wiki` 带目录树，由 front-matter 的 `layout` 决定
 - **目录树导航** —— 由 `_posts` 的目录结构自动构建，可折叠、可过滤、自动展开到当前文章
-- **个人主页数据驱动** —— 名片、技能、经历、教育都写在 `source/_data/*.yml`，改内容不用碰模板
+- **个人主页数据驱动** —— 名片信息写在 `source/_data/profile.yml`，自述正文（背景、经历、技能）直接写在首页 Markdown，改内容不用碰模板
 - **原生暗色模式** —— CSS 变量实现，默认跟随系统，可手动切换并记忆，无第三方依赖
 - **文章内目录（TOC）** —— 自动生成、滚动高亮，不依赖渲染器的锚点实现
 - **响应式** —— 宽屏侧栏常驻并可收起，窄屏变抽屉
@@ -62,12 +62,12 @@ layout: home
 写一句自我介绍，会显示在 Hero 下方。
 ```
 
-主页的数据来自两个文件，按需修改：
+主页只保留 Hero 与自述正文：工作经历、教育经历、技能都写在 `source/index.md` 的自述里，
+主题不再提供对应的独立模块，因此只需要一个数据文件：
 
 | 文件 | 作用 |
 | --- | --- |
-| `source/_data/profile.yml` | 姓名、简介、联系方式、技能卡片 |
-| `source/_data/resume.yml` | 工作经历与教育经历的时间线 |
+| `source/_data/profile.yml` | 姓名、简介、联系方式 |
 
 ```yaml
 # source/_data/profile.yml
@@ -79,26 +79,6 @@ meta:
   - icon: github
     text: GitHub
     url: 'https://github.com/you'
-skills:
-  - name: Programming
-    desc: 描述
-    tags: [C++, Python]
-```
-
-```yaml
-# source/_data/resume.yml
-experience:
-  - title: 项目 / 产品名
-    role: 职位
-    org: 公司
-    period: 2023.03 - 至今
-    points:
-      - 做了什么
-education:
-  - title: 专业
-    role: 硕士
-    org: 学校
-    period: 2020.09 - 2023.06
 ```
 
 ### 2. 笔记区

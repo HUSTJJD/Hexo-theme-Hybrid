@@ -121,7 +121,8 @@
 			});
 		}
 
-		if (header) {
+		// data-autohide 由 header.ejs 按 theme.appearance.hide_header_on_scroll 写入
+		if (header && header.dataset.autohide !== 'false') {
 			let last = 0;
 			window.addEventListener('scroll', () => {
 				const y = window.scrollY;

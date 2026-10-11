@@ -39,9 +39,6 @@ notes:
 
 # 个人主页
 home:
-  skills: "Skills"
-  experience: "Experience"
-  education: "Education"
   enter: "Browse notes"
 
 search:

@@ -79,8 +79,8 @@ appearance:
   color_scheme: auto
   # 背景纹理：none | grid | dots
   backdrop: grid
-  # 顶栏滚动时隐藏
-  hide_header_on_scroll: true
+  # 顶栏随向下滚动隐藏；false = 常驻
+  hide_header_on_scroll: false
 
 #------------------------------------------------------
 # 侧边栏（目录树）

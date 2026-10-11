@@ -46,62 +46,6 @@
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 
 /* ------------------------------------------------------------
-   技能
-   ------------------------------------------------------------ */
-.skill-grid {
-	display: grid; gap: 14px;
-	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-.skill-card {
-	padding: 18px 20px;
-	background: var(--c-surface);
-	border: 1px solid var(--c-border);
-	border-radius: var(--radius);
-	transition: border-color .18s ease, box-shadow .18s ease;
-}
-.skill-card:hover { border-color: var(--c-accent); box-shadow: var(--shadow-sm); }
-.skill-name { font-weight: 650; font-size: 15px; }
-.skill-desc { margin: 6px 0 0; font-size: 13.5px; color: var(--c-text-soft); }
-.skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-
-/* ------------------------------------------------------------
-   时间线
-   ------------------------------------------------------------ */
-.timeline {
-	position: relative;
-	margin: 0; padding: 0 0 0 26px; list-style: none;
-}
-.timeline::before {
-	content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px;
-	width: 2px; background: var(--c-border); border-radius: 2px;
-}
-.timeline-item { position: relative; padding-bottom: 26px; }
-.timeline-item:last-child { padding-bottom: 0; }
-
-.timeline-marker {
-	position: absolute; left: -26px; top: 8px;
-	width: 12px; height: 12px; border-radius: 50%;
-	background: var(--c-surface);
-	border: 2px solid var(--c-accent);
-}
-.timeline-item:first-child .timeline-marker { background: var(--c-accent); }
-
-.timeline-head {
-	display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px;
-}
-.timeline-title { font-weight: 650; font-size: 16px; }
-.timeline-role {
-	padding: 1px 8px; border-radius: 999px;
-	background: var(--c-accent-soft); color: var(--c-accent);
-	font-size: 12px; font-weight: 600;
-}
-.timeline-period { font-size: 12.5px; color: var(--c-text-mute); margin-left: auto; }
-.timeline-org { margin-top: 2px; font-size: 13.5px; color: var(--c-text-soft); }
-
-.timeline-points { margin: 8px 0 0; padding-left: 1.2em; }
-.timeline-points li { margin: 4px 0; font-size: 14px; color: var(--c-text-soft); }
-
-/* ------------------------------------------------------------
    最近更新卡片
    ------------------------------------------------------------ */
 .note-grid {
@@ -132,5 +76,4 @@
 	.hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px 22px; }
 	.hero-name { font-size: 27px; }
 	.hero-avatar img { width: 92px; height: 92px; }
-	.timeline-period { margin-left: 0; }
 }
