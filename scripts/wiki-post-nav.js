@@ -20,9 +20,13 @@
    正好覆盖掉 Hexo 写入的 prev / next，且不需要改动主题子模块。
    ------------------------------------------------------------ */
 
-// 文章在目录树里的位置：slug 形如 LLM/TiniestGPT/11-frontier
+// 文章在目录树里的位置以 _posts 的实际目录为准；slug 只作为旧数据兜底。
 function treePath(post) {
-  return String(post.slug || '').replace(/^\/+|\/+$/g, '');
+  const raw = post && post.source ? String(post.source) : String((post && post.slug) || '');
+  return raw.replace(/\\/g, '/')
+    .replace(/^_posts\//, '')
+    .replace(/\.md$/i, '')
+    .replace(/^\/+|\/+$/g, '');
 }
 
 function newNode(name) {

@@ -18,150 +18,104 @@
 
 		<div id="tree">
 			<%
-				// 当前页面在目录树中的路径：
-				// 文章用 slug（形如 LLM/TiniestGPT/11-frontier），其余页面用输出路径去扩展名。
-				// 旧写法用 page.path 取最后一段，permalink 为 :abbrlink.html 时永远匹配不上，
-				// 导致索引页进目录树后没有任何 active 节点、树被整体收起。
-				const pagePath = (function () {
-					let raw = '';
-					if (is_post() && page.slug) raw = String(page.slug);
-					else if (page.source) raw = String(page.source).replace(/^_posts\//, '').replace(/\.md$/i, '');
-					else if (page.path) raw = String(page.path).replace(/\.html?$/i, '');
-					return raw.replace(/^\/+|\/+$/g, '');
-				})();
+				// 目录树必须来自 _posts 的实际路径。slug 可以被 front-matter 改写，
+				// permalink 更可能完全不含目录信息，都不适合作为树的结构来源。
+				const postTreePath = (post) => {
+					let raw = post && post.source ? String(post.source) : String((post && post.slug) || '');
+					return raw.replace(/\\/g, '/')
+						.replace(/^_posts\//, '')
+						.replace(/\.md$/i, '')
+						.replace(/^\/+|\/+$/g, '');
+				};
 
-				// 把文章路径转换成树形目录结构
-				const pathToTree = (treeNodes) => {
-					var output = [];
-					treeNodes.forEach(function(post){
-						var chain = post.slug.split("/");
-						var currentNode = output;
-						for (var j = 0; j < chain.length; j++) {
-							if (chain[j] === '') {
-								break;
-							}
-							var wantedNode = chain[j];
-							var lastNode = currentNode;
+				const newNode = (name, path) => ({ name: name, path: path, post: null, children: new Map() });
+				const rootNode = newNode('', '');
 
-							for (var k = 0; k < currentNode.length; k++) {
-								if (currentNode[k].title == wantedNode) {
-									currentNode = currentNode[k].children;
-									break;
-								}
-							}
+				site.posts.forEach(function (post) {
+					const parts = postTreePath(post).split('/').filter(Boolean);
+					if (!parts.length) return;
 
-							if (lastNode == currentNode) {
-								var newNode = currentNode[k] = { post: post, title: wantedNode, children: [] };
-								currentNode = newNode.children;
-							} else {
-								delete currentNode.children
-							}
-						}
+					let parent = rootNode;
+					parts.forEach(function (part, index) {
+						const path = parent.path ? parent.path + '/' + part : part;
+						if (!parent.children.has(part)) parent.children.set(part, newNode(part, path));
+						parent = parent.children.get(part);
+						if (index === parts.length - 1) parent.post = post;
 					});
-					return output;
-				}
-			%>
-			<%
-				// 递归渲染目录树，prefix 是当前节点在树中的完整路径
-				const showTree = (treeNodes, prefix) => {
+				});
 
-					// 文件夹排在文件前面，同类型按标题字典序排序
-					treeNodes.sort(function(a, b){
-						const isFolderA = a.children && a.children.length > 0;
-						const isFolderB = b.children && b.children.length > 0;
-
-						if (isFolderA && !isFolderB) return -1;
-						if (!isFolderA && isFolderB) return 1;
-
-						return a.title.localeCompare(b.title);
+				const sortedChildren = (node, skip) => Array.from(node.children.values())
+					.filter(function (child) { return child !== skip; })
+					.sort(function (a, b) {
+						const aDirectory = a.children.size > 0;
+						const bDirectory = b.children.size > 0;
+						if (aDirectory !== bDirectory) return aDirectory ? -1 : 1;
+						return a.name.localeCompare(b.name);
 					});
 
-					treeNodes.forEach(function(node) {
-						const nodePath = prefix ? prefix + '/' + node.title : node.title;
+				const currentId = page && page._id;
+				let branchId = 0;
 
-						if ( node.children == 0 ) {
-							const fileActive = (is_post() && node.post._id == page._id) || nodePath === pagePath;
+				const showNodes = (nodes) => {
+					nodes.forEach(function (node) {
+						// 推荐结构是 folder/folder.md；同时兼容同级的 folder.md + folder/。
+						const namedIndex = node.children.get(node.name);
+						const nestedIndex = namedIndex && namedIndex.post && namedIndex.children.size === 0
+							? namedIndex : null;
+						const indexPost = node.post || (nestedIndex && nestedIndex.post) || null;
+						const children = sortedChildren(node, nestedIndex);
+						const isDirectory = children.length > 0;
+						const active = !!(indexPost && currentId && indexPost._id === currentId);
+						const label = theme.sidebar && theme.sidebar.usePostTitle && indexPost
+							? (indexPost.title || node.name) : node.name;
+						const href = indexPost ? url_for(indexPost.path) : '';
+						const childId = isDirectory ? 'tree-branch-' + (++branchId) : '';
 			%>
-							<ul>
-								<li class="file<%- fileActive ? ' active' : '' %>">
-									<a href="<%- url_for(node.post.path) %>" title="<%- nodePath %>">
-									<% if (theme.sidebar && theme.sidebar.usePostTitle) { %>
-										<%- node.post.title || node.title %>
-									<% } else { %>
-										<%- node.title %>
-									<% } %>
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			<%
-						} else {
-							// 与目录同名的那篇笔记就是该目录的索引笔记
-							let parent;
-							let childrens = [];
-							node.children.forEach(child => {
-								const titleList = child.post.slug.split("/");
-								const title = titleList.slice(-1)[0];
-								if(node.title === title) {
-									parent = child;
-								} else {
-									childrens.push(child);
-								}
-							});
+				<li class="tree-node <%= isDirectory ? 'directory' : 'file' %><%= active ? ' active' : '' %>"
+					data-tree-key="<%= node.path %>" data-tree-label="<%= label %>">
+					<div class="tree-row">
+			<% if (isDirectory) { %>
+						<button class="tree-toggle" type="button" aria-expanded="false"
+							aria-controls="<%= childId %>" title="<%= node.path %>">
+							<i class="fa fa-angle-right" aria-hidden="true"></i>
+							<span><%= label %></span>
+						</button>
+						<% if (indexPost) { %>
+							<% if (href) { %>
+								<a class="dir-index" href="<%- href %>" title="<%= __('toc.index_note') %>"
+									aria-label="<%= __('toc.index_note') %>">
+									<i class="fa fa-file-text-o" aria-hidden="true"></i>
+								</a>
+							<% } else { %>
+								<span class="dir-index is-current" title="<%= __('toc.index_note') %>" aria-current="page">
+									<i class="fa fa-file-text-o" aria-hidden="true"></i>
+								</span>
+							<% } %>
+						<% } %>
+			<% } else if (indexPost) { %>
+						<a class="tree-link"<% if (href) { %> href="<%- href %>"<% } %>
+							title="<%= node.path %>"<% if (active) { %> aria-current="page"<% } %>><%= label %></a>
+			<% } %>
+					</div>
 
-							const hasIndex = !!parent;
-							const indexUrl = hasIndex ? url_for(parent.post.path) : '';
-							// 索引页的路径是「目录路径 + / + 目录名」
-							const indexPath = nodePath + '/' + node.title;
-							const dirActive = hasIndex && indexPath === pagePath;
-							// 目录下只有索引笔记、没有其它子项时，它本质就是一个页面：
-							// 按文件节点渲染，不给展开图标（否则点了没有任何反应），点击直接打开索引笔记
-							const leafDir = hasIndex && childrens.length === 0;
-			%>
-							<ul>
-			<% 					if(leafDir){ %>
-									<li class="file<%- (is_post() && parent.post._id == page._id) || indexPath === pagePath ? ' active' : '' %>">
-										<%# relative_link 下指向当前页的链接会是空串，这里就不写 href %>
-										<a<% if (indexUrl) { %> href="<%- indexUrl %>"<% } %> title="<%- indexPath %>">
-										<% if (theme.sidebar && theme.sidebar.usePostTitle) { %>
-											<%- parent.post.title || node.title %>
-										<% } else { %>
-											<%- node.title %>
-										<% } %>
-										</a>
-									</li>
-									<div class="article-toc" style="display: none;"></div>
-			<% 					} else { %>
-								<li class="directory">
-			<% 						if(hasIndex){ %>
-										<%# relative_link 下指向当前页的链接会是空串，这里就不写 href %>
-										<a class="directory <%- dirActive ? 'active' : '' %>"<% if (indexUrl) { %> href="<%- indexUrl %>"<% } %> title="<%- nodePath %>">
-											<i class="fa fa-plus-square-o"></i>
-											<%- node.title %>
-										</a>
-			<% 						} else { %>
-										<a title="<%- nodePath %>" class="directory-empty">
-											<i class="fa fa-plus-square-o"></i>
-											<%- node.title %>
-										</a>
-			<% 						} %>
-									<div class="article-toc" style="display: none;"></div>
-			<% 						if(hasIndex && indexUrl){ %>
-										<%# 目录行只负责展开/折叠，索引笔记通过这个入口打开 %>
-										<a class="dir-index" href="<%- indexUrl %>" title="<%= __('toc.index_note') %>" aria-label="<%= __('toc.index_note') %>">
-											<i class="fa fa-file-text-o" aria-hidden="true"></i>
-										</a>
-			<% 						} %>
-									<%- showTree(childrens, nodePath) %>
-								</li>
-			<% 					} %>
-							</ul>
+					<% if (active) { %>
+						<nav class="article-toc" aria-label="<%= page.title %>" hidden></nav>
+					<% } %>
+
+					<% if (isDirectory) { %>
+						<ul id="<%= childId %>" class="tree-children" hidden>
+							<% showNodes(children); %>
+						</ul>
+					<% } %>
+				</li>
 			<%
-						}
 					});
-				}
-				showTree(pathToTree(site.posts), '')
+				};
 			%>
+
+			<ul class="tree-root">
+				<% showNodes(sortedChildren(rootNode)); %>
+			</ul>
 		</div>
 	</div>
 </aside>

@@ -205,64 +205,54 @@
 	   --------------------------------------------------------- */
 	const TREE_KEY = 'tree-open';
 
-	// 目录树的结构是 <li><a>…</a><ul>…</ul><ul>…</ul></li>，
-	// 子列表是 li 的直接子级，而不是 a.closest('ul') 的兄弟
-	function childUls(node) {
-		const li = node && node.closest('li');
-		if (!li) return [];
-		return $$(':scope > ul', li);
+	function directoryButtons() {
+		return $$('#tree li.directory > .tree-row > .tree-toggle');
 	}
 
-	function isExpanded(node) {
-		const uls = childUls(node);
-		return uls.length > 0 && uls.some(ul => ul.style.display === 'block');
+	function childList(button) {
+		const li = button && button.closest('li.directory');
+		return li ? $(':scope > .tree-children', li) : null;
 	}
 
-	// 图标跟随子列表的真实显示状态，避免「减号图标 + 收起的内容」
-	function syncIcon(node) {
-		if (!node) return;
-		const icon = node.querySelector('.fa');
+	function isExpanded(button) {
+		return !!button && button.getAttribute('aria-expanded') === 'true';
+	}
+
+	function syncIcon(button) {
+		if (!button) return;
+		const icon = button.querySelector('.fa');
 		if (!icon) return;
-		const open = isExpanded(node);
-		icon.classList.toggle('fa-minus-square-o', open);
-		icon.classList.toggle('fa-plus-square-o', !open);
-	}
-
-	// 目录行的链接（排除右侧的索引入口图标）
-	function dirLinks() {
-		return $$('#tree li.directory > a').filter(a => !a.classList.contains('dir-index'));
+		const open = isExpanded(button);
+		icon.classList.toggle('fa-angle-down', open);
+		icon.classList.toggle('fa-angle-right', !open);
 	}
 
 	function syncTreeIcons() {
-		dirLinks().forEach(syncIcon);
+		directoryButtons().forEach(syncIcon);
 	}
 
-	function setExpanded(node, expanded) {
-		const uls = childUls(node);
-		if (!uls.length) return false;
-		uls.forEach(ul => { ul.style.display = expanded ? 'block' : 'none'; });
-		syncIcon(node);
+	function setExpanded(button, expanded) {
+		const list = childList(button);
+		if (!list) return false;
+		button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+		list.hidden = !expanded;
+		button.closest('li.directory').classList.toggle('is-open', expanded);
+		syncIcon(button);
 		return true;
 	}
 
-	// 自下而上展开祖先链，把目标节点「露出来」
-	function showPath(node) {
-		if (!node || node.id === 'tree') return;
-		if (node.tagName.toLowerCase() === 'ul') node.style.display = 'block';
-		showPath(node.parentElement);
+	function showAncestors(item) {
+		let parent = item && item.parentElement ? item.parentElement.closest('li.directory') : null;
+		while (parent) {
+			parent.hidden = false;
+			setExpanded($(':scope > .tree-row > .tree-toggle', parent), true);
+			parent = parent.parentElement ? parent.parentElement.closest('li.directory') : null;
+		}
 	}
 
-	// 用「根 -> 当前节点」的标题路径做 key，保证跨页面、刷新后依然稳定
-	function nodeKey(node) {
-		const parts = [];
-		let li = node && node.closest('li');
-		while (li && li.id !== 'tree') {
-			const a = li.querySelector(':scope > a');
-			if (a) parts.unshift((a.textContent || '').trim());
-			const ul = li.parentElement;
-			li = ul && ul.closest ? ul.closest('li') : null;
-		}
-		return parts.join('/');
+	function nodeKey(button) {
+		const li = button && button.closest('li.tree-node');
+		return li ? (li.dataset.treeKey || '') : '';
 	}
 
 	function readTreeState() {
@@ -277,18 +267,19 @@
 
 	// 只在用户手动开合时写入，避免搜索过滤把状态冲掉
 	function saveTreeState() {
-		const open = dirLinks().filter(isExpanded).map(nodeKey);
+		const open = directoryButtons().filter(isExpanded).map(nodeKey).filter(Boolean);
 		cacheSet(TREE_KEY, JSON.stringify(open));
 	}
 
 	// 换页后侧栏会回到顶部，把当前节点滚进可视区，省得手动找
 	function revealActive() {
 		const sidebar = $('#sidebar');
-		const active = $('#tree .active');
+		const active = $('#tree li.tree-node.active');
 		if (!sidebar || !active) return;
 		const box = sidebar.getBoundingClientRect();
 		if (!box.height) return;
-		const rect = active.getBoundingClientRect();
+		const row = $(':scope > .tree-row', active) || active;
+		const rect = row.getBoundingClientRect();
 		if (rect.top >= box.top && rect.bottom <= box.bottom) return;
 		sidebar.scrollTop += rect.top - box.top - box.height / 2 + rect.height / 2;
 	}
@@ -296,13 +287,19 @@
 	// 恢复上次展开的节点（连同祖先链），再展开到当前页面所在节点
 	function restoreTreeView() {
 		const saved = new Set(readTreeState());
-		dirLinks().forEach(a => {
-			if (!saved.has(nodeKey(a))) return;
-			showPath(a);
-			setExpanded(a, true);
+		directoryButtons().forEach(button => setExpanded(button, false));
+		directoryButtons().forEach(button => {
+			if (!saved.has(nodeKey(button))) return;
+			showAncestors(button.closest('li.tree-node'));
+			setExpanded(button, true);
 		});
-		const active = $('#tree .active');
-		if (active) showPath(active);
+		const active = $('#tree li.tree-node.active');
+		if (active) {
+			showAncestors(active);
+			if (active.classList.contains('directory')) {
+				setExpanded($(':scope > .tree-row > .tree-toggle', active), true);
+			}
+		}
 		syncTreeIcons();
 		revealActive();
 	}
@@ -313,27 +310,10 @@
 
 		restoreTreeView();
 
-		// 目录行整行点击 = 展开/折叠，不再触发跳转，避免整页刷新后树又收回去。
-		// 需要打开该目录的索引笔记时，点右侧的 .dir-index 图标（原生跳转）。
-		// 文件节点不做拦截。
-		document.addEventListener('click', (e) => {
-			const target = e.target;
-			if (!target || !target.closest) return;
-
-			const link = target.closest('#tree li > a');
-			if (!link) return;
-
-			// 索引入口保持原生跳转
-			if (link.classList.contains('dir-index')) return;
-
-			const li = link.closest('li');
-			if (!li || !li.classList.contains('directory')) return;
-
-			// 没有任何子列表可展开时退回原生跳转，避免「点了没反应」
-			if (!childUls(link).length) return;
-
-			e.preventDefault();
-			setExpanded(link, !isExpanded(link));
+		tree.addEventListener('click', (e) => {
+			const button = e.target && e.target.closest ? e.target.closest('.tree-toggle') : null;
+			if (!button || !tree.contains(button)) return;
+			setExpanded(button, !isExpanded(button));
 			saveTreeState();
 		});
 	}
@@ -349,26 +329,26 @@
 		const engine = input.getAttribute('data-engine') || 'https://www.google.com/search?q=';
 
 		input.addEventListener('input', () => {
-			const kw = input.value.trim();
+			const kw = input.value.trim().toLocaleLowerCase();
+			const items = $$('li.tree-node', tree);
 
 			if (!kw) {
-				// 清空关键词后回到「记忆中的树」，而不是只剩当前页面一条路径
-				$$('#tree ul', tree).forEach(ul => { ul.style.display = ''; });
-				$$('#tree li.file > a, #tree li.directory > a').forEach(a => {
-					a.style.display = '';
-				});
+				items.forEach(item => { item.hidden = false; });
 				restoreTreeView();
 				return;
 			}
 
-			// 先全部收起并隐藏，再展开命中项
-			$$('#tree ul', tree).forEach(ul => { ul.style.display = 'none'; });
-			$$('#tree li.file > a, #tree li.directory > a').forEach(a => { a.style.display = 'none'; });
+			directoryButtons().forEach(button => setExpanded(button, false));
+			items.forEach(item => { item.hidden = true; });
 
-			const hits = $$('#tree li a').filter(a => a.textContent.includes(kw));
-			hits.forEach(a => {
-				a.style.display = 'block';
-				showPath(a.parentElement);
+			items.filter(item => (item.dataset.treeLabel || '').toLocaleLowerCase().includes(kw))
+				.forEach(item => {
+					item.hidden = false;
+					showAncestors(item);
+					if (item.classList.contains('directory')) {
+						setExpanded($(':scope > .tree-row > .tree-toggle', item), true);
+						$$(':scope .tree-node', item).forEach(child => { child.hidden = false; });
+					}
 			});
 			syncTreeIcons();
 		});
@@ -390,42 +370,61 @@
 	}
 
 	function initArticleToc() {
-		// 目录容器挂在目录树里激活节点的后面，不能取全文档第一个 .article-toc
-		const box = $('#tree .active + .article-toc');
+		const box = $('#tree li.tree-node.active > .article-toc');
 		const content = $('#article-content');
 		if (!box || !content) return;
 
 		const headings = $$('h1, h2, h3, h4, h5, h6', content);
 		if (!headings.length) return;
 
-		// 标题可能没有 id，这里补上，避免依赖渲染器生成锚点
+		// 标题可能没有 id；补齐并去重，保证每一项都能准确定位。
+		const usedIds = new Set($$('[id]').map(el => el.id).filter(Boolean));
 		headings.forEach(h => {
-			if (!h.id) h.id = slugify(h.textContent);
+			if (h.id) return;
+			const base = slugify(h.textContent) || 'section';
+			let id = base;
+			let suffix = 2;
+			while (usedIds.has(id)) id = base + '-' + suffix++;
+			h.id = id;
+			usedIds.add(id);
 		});
 
-		const ul = document.createElement('ul');
+		const rootList = document.createElement('ul');
+		rootList.className = 'article-toc-list';
 		box.innerHTML = '';
-		box.appendChild(ul);
-		box.style.display = 'block';
+		box.appendChild(rootList);
+		box.hidden = false;
 
+		// 每个标题持有自己的子列表；遇到同级或更高层级时回退栈，
+		// 因此 h2 -> h3 -> h2 会得到两个兄弟章节，而不是一条扁平清单。
+		const stack = [{ level: 0, list: rootList }];
 		headings.forEach(h => {
+			const level = parseInt(h.tagName.slice(1), 10);
+			while (stack.length > 1 && level <= stack[stack.length - 1].level) stack.pop();
+
 			const li = document.createElement('li');
 			const a = document.createElement('a');
-			a.href = '#' + h.id;
+			a.href = '#' + encodeURIComponent(h.id);
+			a.dataset.targetId = h.id;
 			a.textContent = h.textContent.replace(/#$/, '').trim();
-			a.style.paddingLeft = (8 + (parseInt(h.tagName.slice(1), 10) - 1) * 10) + 'px';
 			li.appendChild(a);
-			ul.appendChild(li);
-		});
+			stack[stack.length - 1].list.appendChild(li);
 
-		const links = $$('a', ul);
+			const children = document.createElement('ul');
+			children.className = 'article-toc-children';
+			li.appendChild(children);
+			stack.push({ level: level, list: children });
+		});
+		$$('.article-toc-children:empty', rootList).forEach(list => list.remove());
+
+		const links = $$('a[data-target-id]', rootList);
 		links.forEach(a => {
 			a.addEventListener('click', (e) => {
 				e.preventDefault();
-				const target = document.getElementById(decodeURIComponent(a.getAttribute('href')).slice(1));
+				const target = document.getElementById(a.dataset.targetId);
 				if (!target) return;
 				window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-				history.replaceState(null, '', a.getAttribute('href'));
+				history.replaceState(null, '', '#' + encodeURIComponent(a.dataset.targetId));
 			});
 		});
 
@@ -436,7 +435,7 @@
 				if (h.getBoundingClientRect().top + window.scrollY <= window.scrollY + 100) current = h;
 			});
 			links.forEach(a => {
-				a.classList.toggle('read', !!current && decodeURIComponent(a.getAttribute('href')) === '#' + current.id);
+				a.classList.toggle('read', !!current && a.dataset.targetId === current.id);
 			});
 		};
 		window.addEventListener('scroll', sync, { passive: true });

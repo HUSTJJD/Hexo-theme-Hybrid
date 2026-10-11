@@ -110,73 +110,109 @@ body.mode-wiki:not(.sidebar-collapsed) .footer-inner {
    ------------------------------------------------------------ */
 #tree { font-size: 13.5px; }
 #tree ul { margin: 0; padding: 0; list-style: none; }
-#tree ul ul { display: none; padding-left: 14px; }
+#tree .tree-children {
+	margin-left: 11px;
+	padding-left: 10px;
+	border-left: 1px solid var(--c-border);
+}
+#tree .tree-children[hidden],
+#tree .tree-node[hidden] { display: none !important; }
 
-#tree li { position: relative; }
-
-#tree li a {
-	display: block;
-	padding: 5px 10px;
+#tree .tree-node { min-width: 0; }
+#tree .tree-row {
+	display: flex;
+	align-items: center;
+	min-width: 0;
 	border-radius: var(--radius-sm);
-	color: var(--c-text-soft);
-	overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 	transition: background-color .15s ease, color .15s ease;
 }
-#tree li a:hover { background: var(--c-bg); color: var(--c-text); }
+#tree .tree-row:hover { background: var(--c-bg); }
+#tree .tree-node.active > .tree-row { background: var(--c-accent-soft); }
 
-/* active 落在 li（文件）或 a（目录）上，两种情况都要高亮 */
-#tree li.file.active > a,
-#tree li.file > a.active,
-#tree li.directory > a.active {
-	background: var(--c-accent-soft);
-	color: var(--c-accent);
-	font-weight: 600;
+#tree .tree-link,
+#tree .tree-toggle {
+	min-width: 0;
+	min-height: 30px;
+	border: 0;
+	background: transparent;
+	color: var(--c-text-soft);
+	font: inherit;
+	line-height: 20px;
+	text-align: left;
 }
+#tree .tree-link {
+	display: block;
+	flex: 1;
+	padding: 5px 8px 5px 29px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#tree .tree-toggle {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	gap: 5px;
+	padding: 5px 4px 5px 8px;
+	cursor: pointer;
+}
+#tree .tree-toggle > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#tree .tree-toggle > i {
+	flex: 0 0 16px;
+	width: 16px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--c-text-mute);
+}
+#tree .directory > .tree-row .tree-toggle { font-weight: 600; color: var(--c-text); }
+#tree .tree-node.active > .tree-row .tree-link,
+#tree .tree-node.active > .tree-row .tree-toggle { color: var(--c-accent); font-weight: 600; }
+#tree .tree-link:hover,
+#tree .tree-toggle:hover { color: var(--c-text); }
 
-#tree li.directory > a { font-weight: 600; color: var(--c-text); }
-#tree li.directory > a.directory { padding-right: 30px; }
-
-/* 目录的索引笔记入口：目录行本身只负责展开/折叠，
-   想打开该目录的索引笔记就点这个图标 */
-#tree li.directory > .dir-index {
-	position: absolute;
-	top: 3px; right: 6px;
-	display: inline-flex; align-items: center; justify-content: center;
-	width: 22px; height: 22px; padding: 0;
+/* 目录行负责开合，右侧文件图标单独打开该目录的索引笔记。 */
+#tree .dir-index {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 26px;
+	width: 26px;
+	height: 26px;
+	margin-right: 2px;
 	border-radius: var(--radius-sm);
 	font-size: 11px;
 	color: var(--c-text-mute);
 	opacity: .45;
 	transition: opacity .15s ease, color .15s ease, background-color .15s ease;
 }
-#tree li.directory:hover > .dir-index { opacity: .9; }
-#tree li.directory > .dir-index:hover { background: var(--c-bg); color: var(--c-accent); opacity: 1; }
-#tree li.directory > .dir-index > i { width: auto; margin: 0; }
+#tree .tree-row:hover > .dir-index { opacity: .9; }
+#tree .dir-index:hover { background: var(--c-surface); color: var(--c-accent); opacity: 1; }
+#tree .dir-index.is-current { color: var(--c-accent); opacity: .8; }
 
-/* 折叠图标沿用整行的点击行为：点图标或标题都是展开/折叠 */
-#tree li.directory > a > i {
-	display: inline-block;
-	width: 20px;
-	margin-right: 4px;
-	text-align: center;
-	font-size: 12px;
-	color: var(--c-text-mute);
-	cursor: pointer;
+/* 文章内目录沿标题级别建立真实的嵌套列表。 */
+.article-toc { padding: 3px 0 7px 20px; font-size: 12.5px; }
+.article-toc[hidden] { display: none !important; }
+.article-toc ul { display: block; }
+.article-toc .article-toc-children {
+	padding-left: 10px;
+	border-left: 1px solid var(--c-border);
 }
-#tree li.directory > a > i:hover { color: var(--c-accent); }
-#tree li.file > a i { display: none; }
-
-/* 文章内目录（挂在激活节点下方） */
-.article-toc { padding: 2px 0 6px 18px; font-size: 12.5px; }
-.article-toc ul { display: block !important; }
+.article-toc li { min-width: 0; }
 .article-toc a {
-	padding: 2px 8px;
+	display: block;
+	padding: 3px 8px;
 	color: var(--c-text-mute);
-	border-left: 2px solid var(--c-border);
-	border-radius: 0;
+	line-height: 1.45;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
-.article-toc a:hover { color: var(--c-accent); border-left-color: var(--c-accent); }
-.article-toc a.read { color: var(--c-accent); border-left-color: var(--c-accent); }
+.article-toc a:hover,
+.article-toc a.read { color: var(--c-accent); }
 
 /* ------------------------------------------------------------
    笔记正文
