@@ -21,6 +21,8 @@
 	) {
 		mode = 'wiki';
 	}
+	// 静态资源版本号：跟着 theme.version 走，改版后浏览器不会再用旧文件
+	var assetV = theme.version ? '?v=' + encodeURIComponent(String(theme.version)) : '';
 %>
 <!DOCTYPE html>
 <html lang="<%= config.language %>" data-scheme="<%= theme.appearance.color_scheme %>">
@@ -45,6 +47,7 @@
 	<!-- 运行时配置：图表 / 公式 / 需要 JS 用到的文案 -->
 	<script>
 		window.__hybrid = {
+			version: <%- JSON.stringify(String(theme.version || '1')) %>,
 			mermaid: <%- JSON.stringify((theme.markdown && theme.markdown.mermaid) || {}) %>,
 			math: <%- JSON.stringify((theme.markdown && theme.markdown.math) || {}) %>,
 			i18n: {
@@ -56,6 +59,6 @@
 		};
 	</script>
 
-	<%- js('js/main.js') %>
+	<script src="<%- url_for('js/main.js') + assetV %>"></script>
 </body>
 </html>

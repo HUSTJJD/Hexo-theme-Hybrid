@@ -3,6 +3,8 @@
 	const pageTitle = page.title || (page.category || page.tag || '');
 	const fullTitle = pageTitle ? pageTitle + ' | ' + siteTitle : siteTitle + (config.subtitle ? ' | ' + config.subtitle : '');
 	const description = page.description || config.description || '';
+	// 静态资源版本号：跟着 theme.version 走，改版后浏览器不会再用旧文件
+	const assetV = theme.version ? '?v=' + encodeURIComponent(String(theme.version)) : '';
 %>
 <head>
 	<meta charset="utf-8">
@@ -22,13 +24,13 @@
 
 	<!-- 样式：先加载令牌，再加载组件 -->
 	<link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
-	<%- css('css/tokens.css') %>
-	<%- css('css/base.css') %>
-	<%- css('css/home.css') %>
-	<%- css('css/wiki.css') %>
-	<%- css('css/markdown.css') %>
-	<%- css('css/code-tokens.css') %>
-	<%- css('css/plugins.css') %>
+	<link rel="stylesheet" href="<%- url_for('css/tokens.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/base.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/home.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/wiki.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/markdown.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/code-tokens.css') + assetV %>">
+	<link rel="stylesheet" href="<%- url_for('css/plugins.css') + assetV %>">
 
 	<!-- 数学公式（KaTeX）：只在启用时加载 -->
 	<% if (theme.markdown && theme.markdown.katex && theme.markdown.katex.enable){ %>
@@ -43,14 +45,14 @@
 	<!-- 自定义样式 -->
 	<% if (theme.custom.css.path){ %>
 		<% theme.custom.css.path.forEach(function(item){ %>
-			<%- css(item) %>
+			<link rel="stylesheet" href="<%- url_for(item) + assetV %>">
 		<% }); %>
 	<% } %>
 
 	<!-- 自定义脚本（首屏） -->
 	<% if (theme.custom.js.path){ %>
 		<% theme.custom.js.path.forEach(function(item){ %>
-			<%- js(item) %>
+			<script src="<%- url_for(item) + assetV %>"></script>
 		<% }); %>
 	<% } %>
 

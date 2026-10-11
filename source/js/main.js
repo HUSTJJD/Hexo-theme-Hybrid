@@ -18,14 +18,58 @@
 		I18N[key] || (isZh ? fallbackZh : fallbackEn);
 
 	/* ---------------------------------------------------------
-	   深浅色：auto 跟随系统，手动切换写入 localStorage
+	   本地缓存（localStorage）
+	   所有键都带站点版本号：hybrid:v<version>:<key>
+	   发新版时把主题 _config.yml 的 version +1，旧版本的键会在
+	   启动时被清掉，避免新代码读到上一版留下的状态（结构变了会出错）
 	   --------------------------------------------------------- */
+	const CACHE_VERSION = String((window.__hybrid && window.__hybrid.version) || '1');
+	const CACHE_PREFIX = 'hybrid:v' + CACHE_VERSION + ':';
+
+	// 无版本号的旧键：含义稳定、跨版本可直接搬过来的列在这里，其余一律丢弃
+	const LEGACY_MIGRATE = {
+		'hybrid-scheme': 'scheme',
+		'hybrid-sidebar': 'sidebar'
+	};
+
+	function cacheGet(key) {
+		try { return localStorage.getItem(CACHE_PREFIX + key); } catch (e) { return null; }
+	}
+
+	function cacheSet(key, value) {
+		try { localStorage.setItem(CACHE_PREFIX + key, value); } catch (e) { /* 隐私模式下忽略 */ }
+	}
+
+	// 启动时做一次版本对齐：迁移可复用的旧键，清掉其它版本的残留
+	function initCache() {
+		try {
+			Object.keys(LEGACY_MIGRATE).forEach(oldKey => {
+				const value = localStorage.getItem(oldKey);
+				if (value === null) return;
+				if (cacheGet(LEGACY_MIGRATE[oldKey]) === null) cacheSet(LEGACY_MIGRATE[oldKey], value);
+				localStorage.removeItem(oldKey);
+			});
+
+			// 目录树展开状态跟目录结构强绑定，改版后 key 可能对不上，不迁移
+			localStorage.removeItem('hybrid-tree-open');
+
+			const stale = [];
+			for (let i = 0; i < localStorage.length; i++) {
+				const k = localStorage.key(i);
+				if (k && k.indexOf('hybrid:v') === 0 && k.indexOf(CACHE_PREFIX) !== 0) stale.push(k);
+			}
+			stale.forEach(k => localStorage.removeItem(k));
+		} catch (e) { /* 隐私模式下忽略 */ }
+	}
+
+/* ---------------------------------------------------------
+   深浅色：auto 跟随系统，手动切换写入 localStorage
+   --------------------------------------------------------- */
 	function initColorScheme() {
 		const root = document.documentElement;
 		const toggle = $('.scheme-toggle');
-		const KEY = 'hybrid-scheme';
 
-		const saved = localStorage.getItem(KEY);
+		const saved = cacheGet('scheme');
 		if (saved === 'light' || saved === 'dark') {
 			root.setAttribute('data-scheme', saved);
 		}
@@ -53,7 +97,7 @@
 						window.matchMedia('(prefers-color-scheme: dark)').matches);
 				const next = isDark ? 'light' : 'dark';
 				root.setAttribute('data-scheme', next);
-				localStorage.setItem(KEY, next);
+				cacheSet('scheme', next);
 				syncIcon();
 				window.dispatchEvent(new CustomEvent('hybrid:schemechange'));
 			});
@@ -108,7 +152,6 @@
 		if (!sidebar || !toggle) return;
 
 		const mq = window.matchMedia('(max-width: 1100px)');
-		const KEY = 'hybrid-sidebar';
 
 		const setCollapsed = (collapsed) => {
 			sidebar.classList.toggle('is-collapsed', collapsed);
@@ -127,7 +170,7 @@
 
 		// null = 跟随窗口宽度；true/false = 用户手动指定
 		let userPref = null;
-		const saved = localStorage.getItem(KEY);
+		const saved = cacheGet('sidebar');
 		if (!mq.matches && (saved === '1' || saved === '0')) userPref = saved === '1';
 
 		const apply = () => setCollapsed(userPref === null ? mq.matches : userPref);
@@ -136,7 +179,7 @@
 
 		toggle.addEventListener('click', () => {
 			userPref = !sidebar.classList.contains('is-collapsed');
-			if (!mq.matches) localStorage.setItem(KEY, userPref ? '1' : '0');
+			if (!mq.matches) cacheSet('sidebar', userPref ? '1' : '0');
 			setCollapsed(userPref);
 		});
 
@@ -159,7 +202,7 @@
 	/* ---------------------------------------------------------
 	   目录树：展开 / 折叠 + 展开状态记忆
 	   --------------------------------------------------------- */
-	const TREE_KEY = 'hybrid-tree-open';
+	const TREE_KEY = 'tree-open';
 
 	// 目录树的结构是 <li><a>…</a><ul>…</ul><ul>…</ul></li>，
 	// 子列表是 li 的直接子级，而不是 a.closest('ul') 的兄弟
@@ -223,8 +266,9 @@
 
 	function readTreeState() {
 		try {
-			const raw = JSON.parse(localStorage.getItem(TREE_KEY) || '[]');
-			return Array.isArray(raw) ? raw : [];
+			const raw = JSON.parse(cacheGet(TREE_KEY) || '[]');
+			// 版本/结构变了可能是别的形状，过滤掉非字符串，避免后面 Set 比对出错
+			return Array.isArray(raw) ? raw.filter(k => typeof k === 'string') : [];
 		} catch (e) {
 			return [];
 		}
@@ -233,9 +277,7 @@
 	// 只在用户手动开合时写入，避免搜索过滤把状态冲掉
 	function saveTreeState() {
 		const open = dirLinks().filter(isExpanded).map(nodeKey);
-		try {
-			localStorage.setItem(TREE_KEY, JSON.stringify(open));
-		} catch (e) { /* 隐私模式下忽略 */ }
+		cacheSet(TREE_KEY, JSON.stringify(open));
 	}
 
 	// 换页后侧栏会回到顶部，把当前节点滚进可视区，省得手动找
@@ -538,6 +580,7 @@
 	}
 
 	/* --------------------------------------------------------- */
+	initCache();
 	initColorScheme();
 	initChrome();
 	initSidebar();
