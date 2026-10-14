@@ -231,10 +231,15 @@ body.backdrop-dots::before {
 .prose pre:hover .code-copy { opacity: 1; }
 .code-copy:hover { color: var(--c-accent); border-color: var(--c-accent); }
 .prose table {
-	width: 100%; margin: 1.4em 0; border-collapse: collapse;
+	display: block; width: 100%; max-width: 100%; margin: 1.4em 0;
+	overflow-x: auto; border-collapse: collapse;
+	-webkit-overflow-scrolling: touch;
 	font-size: 14px;
 }
-.prose th, .prose td { padding: 8px 12px; border: 1px solid var(--c-border); }
+.prose th, .prose td {
+	padding: 8px 12px; border: 1px solid var(--c-border);
+	vertical-align: top; overflow-wrap: anywhere;
+}
 .prose th { background: var(--c-bg-soft); font-weight: 600; }
 .prose a { color: var(--c-accent); text-decoration: underline; text-decoration-color: var(--c-border-strong); text-underline-offset: 2px; }
 .prose a:hover { text-decoration-color: var(--c-accent); }
