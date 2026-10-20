@@ -1,0 +1,60 @@
+site_name: Hexo-theme-Hybrid
+site_description: 把个人主页和 Wiki 式笔记库放进同一个 Hexo 主题
+site_url: https://hustjjd.github.io/Hexo-theme-Hybrid/
+repo_url: https://github.com/HUSTJJD/Hexo-theme-Hybrid
+repo_name: HUSTJJD/Hexo-theme-Hybrid
+edit_uri: blob/main/docs/
+docs_dir: docs
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: 切换到暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到亮色模式
+
+nav:
+  - 首页: index.md
+  - 安装: installation.md
+  - 个人主页: homepage.md
+  - 笔记区与目录树: notes.md
+  - 页面模式: page-modes.md
+  - 配置: configuration.md
+  - 增强 Markdown: markdown.md
+  - 多语言: i18n.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
