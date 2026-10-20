@@ -1,5 +1,7 @@
 # Hexo-theme-Hybrid
 
+📖 **在线文档**：<https://hustjjd.github.io/Hexo-theme-Hybrid/>
+
 把**个人主页**和 **Wiki 式笔记库**放进同一个 Hexo 主题。
 
 站点首页是你的个人主页（名片、自述、最近更新），
@@ -62,12 +64,18 @@ layout: home
 写一句自我介绍，会显示在 Hero 下方。
 ```
 
-主页只保留 Hero 与自述正文：工作经历、教育经历、技能都写在 `source/index.md` 的自述里，
-主题不再提供对应的独立模块，因此只需要一个数据文件：
+个人主页由**数据文件**驱动，改内容不用碰模板：
 
-| 文件 | 作用 |
-| --- | --- |
-| `source/_data/profile.yml` | 姓名、简介、联系方式 |
+| 文件 | 区块 | 作用 |
+| --- | --- | --- |
+| `source/_data/profile.yml` | Hero | 姓名、简介、联系方式、要点、技能 |
+| `source/_data/home.yml` | 通用文案 | 眉标、按钮、区块标题 |
+| `source/_data/works.yml` | WORKS / EDUCATION | 工作与学习经历，按组织分组 |
+| `source/_data/projects.yml` | PROJECTS | 开源项目卡片（含 GitHub Star 按钮） |
+| `source/_data/papers.yml` | PAPERS / PATENTS | 论文与专利 |
+
+所有区块都是**可选**的：yml 不存在或为空时整块不渲染，页面不会留空洞。
+工作经历与开源项目分开存放——前者是「在哪儿做了什么」，后者是「自己发起 / 维护的东西」。
 
 ```yaml
 # source/_data/profile.yml
@@ -79,7 +87,16 @@ meta:
   - icon: github
     text: GitHub
     url: 'https://github.com/you'
+
+highlights:
+  - 一句话要点，显示在 Hero 下方
 ```
+
+完整字段说明见[个人主页文档](https://hustjjd.github.io/Hexo-theme-Hybrid/homepage/)。
+
+> [!NOTE]
+> 首页文案写在 `_data/home.yml` 与各区块 yml 的 `title` 里，**不走 i18n**，
+> 因此首页可以独立于站点语言（例如站点 `language: zh-CN`、笔记区中文，而首页全英文）。
 
 ### 2. 笔记区
 
