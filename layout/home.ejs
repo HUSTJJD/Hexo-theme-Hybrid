@@ -91,7 +91,7 @@
 	%>
 		<section class="section" id="<%= sec.id %>">
 			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-<%= cfg.icon || sec.icon %>" aria-hidden="true"></i> <%= cfg.title || sec.fallback %></h2>
+				<h2 class="section-title"><%= cfg.title || sec.fallback %></h2>
 			</div>
 
 			<div class="entry-groups">
@@ -109,25 +109,24 @@
 							<div class="entry-head-text">
 								<h3 class="entry-org">
 									<% if (g.url){ %>
-										<a href="<%= g.url %>" target="_blank" rel="noopener"><%= g.org %><i class="fa fa-external-link" aria-hidden="true"></i></a>
+										<a href="<%= g.url %>" target="_blank" rel="noopener"><%= g.org %></a>
 									<% } else { %><%= g.org %><% } %>
 								</h3>
-								<div class="entry-sub">
-									<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
-									<span class="entry-meta"><%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %></span>
-								</div>
+								<% if (g.role){ %><div class="entry-role"><%= g.role %></div><% } %>
 							</div>
+
+							<span class="entry-meta"><%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %></span>
 						</div>
 
 						<% if (g.items && g.items.length){ %>
-							<ul class="entry-items">
+							<div class="entry-items">
 								<% g.items.forEach(function(it){ %>
-									<li>
-										<span class="entry-name"><%= it.name %></span>
+									<div class="entry-item">
+										<h4 class="entry-name"><%= it.name %></h4>
 										<% if (it.desc){ %><p class="entry-desc"><%= it.desc %></p><% } %>
-									</li>
+									</div>
 								<% }); %>
-							</ul>
+							</div>
 						<% } %>
 					</div>
 				<% }); %>
@@ -139,7 +138,7 @@
 	<% if (projects.length){ %>
 		<section class="section" id="projects">
 			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-<%= projData.icon || 'code' %>" aria-hidden="true"></i> <%= projData.title || 'PROJECTS' %></h2>
+				<h2 class="section-title"><%= projData.title || 'Projects </>' %></h2>
 				<% if (github){ %>
 					<a class="section-more" href="<%= github %>" target="_blank" rel="noopener"><%= home.more || 'More' %> <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 				<% } %>
@@ -191,7 +190,7 @@
 	%>
 		<section class="section" id="<%= sec.id %>">
 			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-<%= cfg.icon || 'file-text-o' %>" aria-hidden="true"></i> <%= cfg.title || sec.fallback %></h2>
+				<h2 class="section-title"><%= cfg.title || sec.fallback %></h2>
 			</div>
 
 			<ul class="pub-list">
@@ -216,7 +215,7 @@
 	<!-- 最近更新 -->
 	<section class="section" id="recent">
 		<div class="section-head">
-			<h2 class="section-title"><i class="fa fa-clock-o" aria-hidden="true"></i> <%= home.latest || 'LATEST FROM BLOG' %></h2>
+			<h2 class="section-title"><%= home.latest || 'LATEST FROM BLOG' %></h2>
 			<a class="section-more" href="<%= url_for('/notes/') %>"><%= home.more || 'More' %> <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 		</div>
 
