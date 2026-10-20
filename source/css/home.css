@@ -162,11 +162,13 @@
 
 .entry-group-head { display: flex; align-items: center; gap: 13px; }
 
+/* logo 容器：横版适配；底色固定为白（logo 自带白底，深浅色主题下都完整显示） */
 .entry-logo {
-	flex: none; width: 40px; height: 40px;
+	flex: none; height: 38px; width: 86px;
 	border-radius: 10px; object-fit: contain;
-	background: var(--c-surface-2);
-	padding: 5px;
+	background: #ffffff;
+	border: 1px solid var(--c-border);
+	padding: 6px;
 }
 .entry-logo-icon {
 	display: inline-flex; align-items: center; justify-content: center;
