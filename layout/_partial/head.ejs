@@ -18,7 +18,7 @@
 
 	<!-- 主题色，跟随深浅色 -->
 	<meta name="theme-color" content="#f7faff" media="(prefers-color-scheme: light)">
-	<meta name="theme-color" content="#1c1917" media="(prefers-color-scheme: dark)">
+	<meta name="theme-color" content="#191e24" media="(prefers-color-scheme: dark)">
 
 	<% if (theme.favicon.dark){ %><%- favicon_tag(theme.favicon.dark) %><% } %>
 
@@ -40,6 +40,13 @@
 	<!-- 数学公式样式：构建期已渲染成 HTML，这里只补 CSS -->
 	<% if (theme.markdown && theme.markdown.math && theme.markdown.math.enable){ %>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@<%= theme.markdown.math.version %>/dist/katex.min.css">
+	<% } %>
+
+	<!-- GitHub 官方按钮（buttons.github.io）：只在首页的项目卡片里用到 -->
+	<!-- 注意：partial 拿不到 layout.ejs 的局部变量，这里直接看 page.layout -->
+	<% const isHome = page.layout === 'home' || page.layout === 'landing'; %>
+	<% if (isHome){ %>
+		<script async defer src="https://buttons.github.io/buttons.js"></script>
 	<% } %>
 
 	<!-- 自定义样式 -->

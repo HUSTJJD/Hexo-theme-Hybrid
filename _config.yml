@@ -16,7 +16,7 @@
 # 站点发布新版（结构调整 / 样式重构 / JS 逻辑变更）时把它 +1：
 #   1. css / js 的 URL 会带上 ?v=<version>，浏览器重新拉取，不再吃旧文件缓存
 #   2. 旧版本的本地缓存会被丢弃，深浅色与侧栏偏好自动迁移到新版本
-version: '4'
+version: '5'
 
 #------------------------------------------------------
 # 站点标识
@@ -76,7 +76,7 @@ social:
 appearance:
   # 暗色模式：auto | light | dark
   # auto 会跟随系统偏好，并记住用户手动切换的结果
-  color_scheme: auto
+  color_scheme: dark
   # 背景纹理：none | grid | dots
   backdrop: grid
   # 顶栏随向下滚动隐藏；false = 常驻

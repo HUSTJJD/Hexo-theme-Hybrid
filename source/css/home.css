@@ -111,9 +111,96 @@
 .project-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
 .project-links .btn { padding: 6px 13px; font-size: 13px; }
 
+/* ------------------------------------------------------------
+   区块标题：全大写 + 字距（kaiyi.cool 风格）
+   ------------------------------------------------------------ */
+.home .section-head {
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--c-border);
+	margin-bottom: 20px;
+}
+.home .section-title {
+	text-transform: uppercase;
+	letter-spacing: .12em;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+/* ------------------------------------------------------------
+   hero：眉标 + 要点列表
+   ------------------------------------------------------------ */
+.hero-eyebrow {
+	margin: 0 0 6px;
+	font-size: 12.5px; font-weight: 700;
+	letter-spacing: .18em; text-transform: uppercase;
+	color: var(--c-accent);
+}
+
+.hero-highlights { margin: 22px 0 0; padding: 0; list-style: none; }
+.hero-highlights li {
+	position: relative;
+	padding-left: 20px;
+	margin: .4em 0;
+	font-size: 14.5px; line-height: 1.7;
+	color: var(--c-text-soft);
+}
+.hero-highlights i {
+	position: absolute; left: 0; top: .45em;
+	font-size: 12px; color: var(--c-accent);
+}
+
+/* ------------------------------------------------------------
+   WORKS / EDUCATION：按组织分组的条目
+   ------------------------------------------------------------ */
+.entry-groups { display: flex; flex-direction: column; gap: 26px; }
+
+.entry-group-head {
+	display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px;
+	margin-bottom: 10px;
+}
+.entry-org {
+	margin: 0; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em;
+	color: var(--c-text);
+}
+.entry-role { font-size: 14px; color: var(--c-accent); font-weight: 600; }
+.entry-meta {
+	margin-left: auto;
+	font-size: 12.5px; color: var(--c-text-mute);
+	font-variant-numeric: tabular-nums;
+}
+
+.entry-items { margin: 0; padding: 0; list-style: none; }
+.entry-items li { padding: 12px 0 12px 16px; border-left: 2px solid var(--c-border); }
+.entry-items li:first-child { padding-top: 4px; }
+.entry-name { display: block; font-size: 14.5px; font-weight: 600; color: var(--c-text); }
+.entry-desc { margin: 4px 0 0; font-size: 13.8px; line-height: 1.7; color: var(--c-text-soft); }
+
+/* ------------------------------------------------------------
+   PAPERS / PATENTS
+   ------------------------------------------------------------ */
+.pub-list { margin: 0; padding: 0; list-style: none; }
+.pub-item {
+	padding: 14px 0;
+	border-bottom: 1px dashed var(--c-border);
+}
+.pub-item:last-child { border-bottom: 0; }
+.pub-title { font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--c-text); }
+.pub-title a { color: var(--c-text); text-decoration: none; }
+.pub-title a:hover { color: var(--c-accent); }
+.pub-authors { margin-top: 4px; font-size: 13.5px; color: var(--c-text-soft); }
+.pub-venue {
+	display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+	margin-top: 4px; font-size: 13px; color: var(--c-text-mute);
+	font-style: italic;
+}
+
+/* GitHub 官方按钮：脚本会把 <a> 换成 iframe，这里只管间距 */
+.project-links .github-button { margin-left: 2px; }
+
 @media (max-width: 860px) {
 	.hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px 22px; }
 	.hero-name { font-size: 27px; }
 	.hero-avatar img { width: 92px; height: 92px; }
 	.project-grid { grid-template-columns: 1fr; }
+	.entry-meta { margin-left: 0; width: 100%; }
 }

@@ -1,7 +1,18 @@
 <%
+	const home = site.data.home || {};
 	const profile = site.data.profile || {};
+	const works = site.data.works || {};
+	const papers = site.data.papers || {};
+	const projData = site.data.projects || {};
+	const projects = projData.projects || [];
 	const recentCount = theme.notes.recent_count || 6;
 	const github = (theme.social && theme.social.github && theme.social.github.url) || '';
+	const tagline = profile.tagline || config.subtitle || '';
+
+	// 区块标题：大写 + 尾部符号，符号缺省为空
+	function sectionTitle(cfg, fallback, symbol){
+		return (cfg && cfg.title) || fallback;
+	}
 %>
 <div class="home">
 
@@ -13,8 +24,8 @@
 			</div>
 
 			<div class="hero-text">
+				<p class="hero-eyebrow"><%= home.eyebrow || 'HI, THERE!' %></p>
 				<h1 class="hero-name"><%= profile.name || config.author %></h1>
-				<% const tagline = profile.tagline || config.subtitle || ''; %>
 				<% if (tagline){ %><p class="hero-tagline"><%= tagline %></p><% } %>
 
 				<% if (profile.meta && profile.meta.length){ %>
@@ -30,7 +41,7 @@
 
 				<div class="hero-actions">
 					<a class="btn btn-primary" href="<%= url_for('/notes/') %>">
-						<i class="fa fa-sitemap" aria-hidden="true"></i> <%= __('home.enter') %>
+						<i class="fa fa-sitemap" aria-hidden="true"></i> <%= home.enter || 'Browse notes' %>
 					</a>
 					<% if (github){ %>
 						<a class="btn btn-ghost" href="<%= github %>" target="_blank" rel="noopener">
@@ -40,6 +51,14 @@
 				</div>
 			</div>
 		</div>
+
+		<% if (profile.highlights && profile.highlights.length){ %>
+			<ul class="hero-highlights">
+				<% profile.highlights.forEach(function(h){ %>
+					<li><i class="fa fa-angle-right" aria-hidden="true"></i> <%= h %></li>
+				<% }); %>
+			</ul>
+		<% } %>
 	</section>
 
 	<!-- 自述正文（来自 source/index.md） -->
@@ -51,14 +70,81 @@
 		</section>
 	<% } %>
 
-	<!-- 开源项目（数据源：source/_data/projects.yml，未配置则整块不渲染） -->
-	<% const projects = (site.data.projects && site.data.projects.projects) || []; %>
+	<!-- WORKS：工作经历 -->
+	<% const exp = works.experience || {}; %>
+	<% if (exp.groups && exp.groups.length){ %>
+		<section class="section" id="works">
+			<div class="section-head">
+				<h2 class="section-title"><i class="fa fa-<%= exp.icon || 'briefcase' %>" aria-hidden="true"></i> <%= sectionTitle(exp, 'WORKS') %></h2>
+			</div>
+
+			<div class="entry-groups">
+				<% exp.groups.forEach(function(g){ %>
+					<div class="entry-group">
+						<div class="entry-group-head">
+							<h3 class="entry-org"><%= g.org %></h3>
+							<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
+							<span class="entry-meta">
+								<%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %>
+							</span>
+						</div>
+						<% if (g.items && g.items.length){ %>
+							<ul class="entry-items">
+								<% g.items.forEach(function(it){ %>
+									<li>
+										<span class="entry-name"><%= it.name %></span>
+										<% if (it.desc){ %><p class="entry-desc"><%= it.desc %></p><% } %>
+									</li>
+								<% }); %>
+							</ul>
+						<% } %>
+					</div>
+				<% }); %>
+			</div>
+		</section>
+	<% } %>
+
+	<!-- EDUCATION：学习经历 -->
+	<% const edu = works.education || {}; %>
+	<% if (edu.groups && edu.groups.length){ %>
+		<section class="section" id="education">
+			<div class="section-head">
+				<h2 class="section-title"><i class="fa fa-<%= edu.icon || 'graduation-cap' %>" aria-hidden="true"></i> <%= sectionTitle(edu, 'EDUCATION') %></h2>
+			</div>
+
+			<div class="entry-groups">
+				<% edu.groups.forEach(function(g){ %>
+					<div class="entry-group">
+						<div class="entry-group-head">
+							<h3 class="entry-org"><%= g.org %></h3>
+							<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
+							<span class="entry-meta">
+								<%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %>
+							</span>
+						</div>
+						<% if (g.items && g.items.length){ %>
+							<ul class="entry-items">
+								<% g.items.forEach(function(it){ %>
+									<li>
+										<span class="entry-name"><%= it.name %></span>
+										<% if (it.desc){ %><p class="entry-desc"><%= it.desc %></p><% } %>
+									</li>
+								<% }); %>
+							</ul>
+						<% } %>
+					</div>
+				<% }); %>
+			</div>
+		</section>
+	<% } %>
+
+	<!-- PROJECTS：开源项目 -->
 	<% if (projects.length){ %>
 		<section class="section" id="projects">
 			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-cube" aria-hidden="true"></i> <%= __('home.projects') %></h2>
+				<h2 class="section-title"><i class="fa fa-<%= projData.icon || 'code' %>" aria-hidden="true"></i> <%= projData.title || 'PROJECTS' %></h2>
 				<% if (github){ %>
-					<a class="section-more" href="<%= github %>" target="_blank" rel="noopener">GitHub <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+					<a class="section-more" href="<%= github %>" target="_blank" rel="noopener"><%= home.more || 'More' %> <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 				<% } %>
 			</div>
 
@@ -83,13 +169,13 @@
 						<div class="project-links">
 							<% if (p.url){ %>
 								<a class="btn btn-primary" href="<%= p.url %>" target="_blank" rel="noopener">
-									<i class="fa fa-book" aria-hidden="true"></i> <%= __('home.docs') %>
+									<i class="fa fa-book" aria-hidden="true"></i> <%= home.docs || 'Docs' %>
 								</a>
 							<% } %>
 							<% if (p.repo){ %>
-								<a class="btn btn-ghost" href="<%= p.repo %>" target="_blank" rel="noopener">
-									<i class="fa fa-github" aria-hidden="true"></i> <%= __('home.code') %>
-								</a>
+								<a class="github-button" href="<%= p.repo %>"
+									data-icon="octicon-star" data-size="large" data-show-count="true"
+									aria-label="Star <%= p.repo.replace('https://github.com/','') %> on GitHub"><%= home.source || 'Source' %></a>
 							<% } %>
 						</div>
 					</article>
@@ -98,11 +184,43 @@
 		</section>
 	<% } %>
 
+	<!-- PAPERS / PATENTS：学术成果 -->
+	<% [
+			{ cfg: papers.papers, fallback: 'PAPERS', id: 'papers' },
+			{ cfg: papers.patents, fallback: 'PATENTS', id: 'patents' }
+		].forEach(function(sec){
+			const cfg = sec.cfg;
+			if (!cfg || !cfg.items || !cfg.items.length) return;
+	%>
+		<section class="section" id="<%= sec.id %>">
+			<div class="section-head">
+				<h2 class="section-title"><i class="fa fa-<%= cfg.icon || 'file-text-o' %>" aria-hidden="true"></i> <%= cfg.title || sec.fallback %></h2>
+			</div>
+
+			<ul class="pub-list">
+				<% cfg.items.forEach(function(it){ %>
+					<li class="pub-item">
+						<div class="pub-title">
+							<% if (it.url){ %>
+								<a href="<%= it.url %>" target="_blank" rel="noopener"><%= it.title %></a>
+							<% } else { %><%= it.title %><% } %>
+						</div>
+						<% if (it.authors){ %><div class="pub-authors"><%= it.authors %></div><% } %>
+						<div class="pub-venue">
+							<%= it.venue || '' %>
+							<% if (it.note){ %><span class="chip chip-soft"><%= it.note %></span><% } %>
+						</div>
+					</li>
+				<% }); %>
+			</ul>
+		</section>
+	<% }); %>
+
 	<!-- 最近更新 -->
 	<section class="section" id="recent">
 		<div class="section-head">
-			<h2 class="section-title"><i class="fa fa-clock-o" aria-hidden="true"></i> <%= __('notes.recent') %></h2>
-			<a class="section-more" href="<%= url_for('/notes/') %>"><%= __('notes.more') %> <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+			<h2 class="section-title"><i class="fa fa-clock-o" aria-hidden="true"></i> <%= home.latest || 'LATEST FROM BLOG' %></h2>
+			<a class="section-more" href="<%= url_for('/notes/') %>"><%= home.more || 'More' %> <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 		</div>
 
 		<div class="note-grid">
