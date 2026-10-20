@@ -9,13 +9,7 @@
 
 .hero-inner {
 	display: flex; align-items: center; gap: 32px;
-	padding: 40px;
-	background:
-		radial-gradient(120% 140% at 100% 0%, var(--c-accent-soft) 0%, transparent 55%),
-		var(--c-surface);
-	border: 1px solid var(--c-border);
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-sm);
+	padding: 4px 0 0;
 }
 
 .hero-avatar { flex: none; }
@@ -84,8 +78,7 @@
 	padding: 20px;
 	background: var(--c-surface);
 	border: 1px solid var(--c-border);
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-sm);
+	border-radius: 14px;
 	transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 .project-card:hover {
@@ -152,19 +145,52 @@
 /* ------------------------------------------------------------
    WORKS / EDUCATION：按组织分组的条目
    ------------------------------------------------------------ */
-.entry-groups { display: flex; flex-direction: column; gap: 26px; }
-
-.entry-group-head {
-	display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px;
-	margin-bottom: 10px;
+/* 组织卡片：图标 + 组织名（外链）+ 角色 / 时间 */
+.entry-groups {
+	display: grid; gap: 14px;
+	grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
 }
+
+.entry-group {
+	padding: 18px 20px;
+	background: var(--c-surface);
+	border: 1px solid var(--c-border);
+	border-radius: 14px;
+	transition: border-color .18s ease, background .18s ease;
+}
+.entry-group:hover { border-color: var(--c-border-strong); }
+
+.entry-group-head { display: flex; align-items: center; gap: 13px; }
+
+.entry-logo {
+	flex: none; width: 40px; height: 40px;
+	border-radius: 10px; object-fit: contain;
+	background: var(--c-surface-2);
+	padding: 5px;
+}
+.entry-logo-icon {
+	display: inline-flex; align-items: center; justify-content: center;
+	color: var(--c-text-soft); font-size: 16px;
+}
+
+.entry-head-text { min-width: 0; flex: 1; }
 .entry-org {
-	margin: 0; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em;
+	margin: 0; font-size: 15.5px; font-weight: 700; letter-spacing: -.01em;
 	color: var(--c-text);
 }
-.entry-role { font-size: 14px; color: var(--c-accent); font-weight: 600; }
+.entry-org a {
+	display: inline-flex; align-items: center; gap: 6px;
+	color: var(--c-text); text-decoration: none;
+}
+.entry-org a:hover { color: var(--c-accent); }
+.entry-org a i { font-size: 10.5px; opacity: .55; }
+
+.entry-sub {
+	display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
+	margin-top: 3px;
+}
+.entry-role { font-size: 13.5px; color: var(--c-accent); font-weight: 600; }
 .entry-meta {
-	margin-left: auto;
 	font-size: 12.5px; color: var(--c-text-mute);
 	font-variant-numeric: tabular-nums;
 }

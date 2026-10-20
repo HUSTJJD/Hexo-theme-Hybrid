@@ -70,24 +70,55 @@
 		</section>
 	<% } %>
 
-	<!-- WORKS：工作经历 -->
-	<% const exp = works.experience || {}; %>
-	<% if (exp.groups && exp.groups.length){ %>
-		<section class="section" id="works">
+	<!-- WORKS / EDUCATION：组织卡片（图标 + 官网链接） -->
+	<%
+		// 组织图标：优先用数据里给的 logo；否则按官网域名取 favicon；都没有就退回图标字体
+		function orgLogo(g){
+			if (g.logo) return g.logo;
+			if (g.url){
+				const m = String(g.url).match(/^https?:\/\/([^/]+)/);
+				if (m) return 'https://www.google.com/s2/favicons?domain=' + m[1] + '&sz=64';
+			}
+			return '';
+		}
+	%>
+	<% [
+			{ cfg: works.experience, fallback: 'WORKS', id: 'works', icon: 'briefcase' },
+			{ cfg: works.education, fallback: 'EDUCATION', id: 'education', icon: 'graduation-cap' }
+		].forEach(function(sec){
+			const cfg = sec.cfg;
+			if (!cfg || !cfg.groups || !cfg.groups.length) return;
+	%>
+		<section class="section" id="<%= sec.id %>">
 			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-<%= exp.icon || 'briefcase' %>" aria-hidden="true"></i> <%= sectionTitle(exp, 'WORKS') %></h2>
+				<h2 class="section-title"><i class="fa fa-<%= cfg.icon || sec.icon %>" aria-hidden="true"></i> <%= cfg.title || sec.fallback %></h2>
 			</div>
 
 			<div class="entry-groups">
-				<% exp.groups.forEach(function(g){ %>
+				<% cfg.groups.forEach(function(g){
+					const logo = orgLogo(g);
+				%>
 					<div class="entry-group">
 						<div class="entry-group-head">
-							<h3 class="entry-org"><%= g.org %></h3>
-							<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
-							<span class="entry-meta">
-								<%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %>
-							</span>
+							<% if (logo){ %>
+								<img class="entry-logo" src="<%= logo %>" alt="<%= g.org %>" loading="lazy">
+							<% } else { %>
+								<span class="entry-logo entry-logo-icon"><i class="fa fa-<%= g.icon || sec.icon %>" aria-hidden="true"></i></span>
+							<% } %>
+
+							<div class="entry-head-text">
+								<h3 class="entry-org">
+									<% if (g.url){ %>
+										<a href="<%= g.url %>" target="_blank" rel="noopener"><%= g.org %><i class="fa fa-external-link" aria-hidden="true"></i></a>
+									<% } else { %><%= g.org %><% } %>
+								</h3>
+								<div class="entry-sub">
+									<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
+									<span class="entry-meta"><%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %></span>
+								</div>
+							</div>
 						</div>
+
 						<% if (g.items && g.items.length){ %>
 							<ul class="entry-items">
 								<% g.items.forEach(function(it){ %>
@@ -102,41 +133,7 @@
 				<% }); %>
 			</div>
 		</section>
-	<% } %>
-
-	<!-- EDUCATION：学习经历 -->
-	<% const edu = works.education || {}; %>
-	<% if (edu.groups && edu.groups.length){ %>
-		<section class="section" id="education">
-			<div class="section-head">
-				<h2 class="section-title"><i class="fa fa-<%= edu.icon || 'graduation-cap' %>" aria-hidden="true"></i> <%= sectionTitle(edu, 'EDUCATION') %></h2>
-			</div>
-
-			<div class="entry-groups">
-				<% edu.groups.forEach(function(g){ %>
-					<div class="entry-group">
-						<div class="entry-group-head">
-							<h3 class="entry-org"><%= g.org %></h3>
-							<% if (g.role){ %><span class="entry-role"><%= g.role %></span><% } %>
-							<span class="entry-meta">
-								<%= g.period || '' %><% if (g.location){ %> · <%= g.location %><% } %>
-							</span>
-						</div>
-						<% if (g.items && g.items.length){ %>
-							<ul class="entry-items">
-								<% g.items.forEach(function(it){ %>
-									<li>
-										<span class="entry-name"><%= it.name %></span>
-										<% if (it.desc){ %><p class="entry-desc"><%= it.desc %></p><% } %>
-									</li>
-								<% }); %>
-							</ul>
-						<% } %>
-					</div>
-				<% }); %>
-			</div>
-		</section>
-	<% } %>
+	<% }); %>
 
 	<!-- PROJECTS：开源项目 -->
 	<% if (projects.length){ %>

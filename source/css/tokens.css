@@ -68,39 +68,45 @@
 	html[data-scheme="auto"] {
 		color-scheme: dark;
 
-		/* 深色 = 冷灰蓝电子屏（参考 kaiyi.cool：#191e24 底 + 青蓝强调） */
-		--c-bg: #191e24;
-		--c-bg-soft: #1d232a;
-		--c-surface: #21272f;
-		--c-surface-2: #2a323c;
-		--c-border: #2f3841;
-		--c-border-strong: #414c58;
+		/* 深色 = 中性灰蓝（对齐 kaiyi.cool 的 daisyUI dark 主题）
+		   底 #15171c / 卡片 #1c1f26 / 文字 #dfe3e9 / 次要 #9ca3af / 强调蓝 #60a5fa
+		   整体克制、几乎无彩色：强调色只用在链接、图标与分隔线上 */
+		--c-bg: #15171c;
+		--c-bg-soft: #1c1f26;
+		--c-surface: #1c1f26;
+		--c-surface-2: #292d36;
+		--c-border: #292d36;
+		--c-border-strong: #3a4049;
 
-		--c-text: #e6e9ee;
-		--c-text-soft: #a6adbb;
-		--c-text-mute: #8a929f;
+		--c-text: #dfe3e9;
+		--c-text-soft: #9ca3af;
+		--c-text-mute: #7b8492;
 
-		--c-accent: #00b3f0;
-		--c-accent-soft: #10303d;
-		--c-accent-text: #3ba9ee;
-		--c-on-accent: #052430;
+		--c-accent: #60a5fa;
+		--c-accent-soft: #1b2536;
+		--c-accent-text: #93c5fd;
+		--c-on-accent: #0b1120;
 
-		--c-mark: #2c3742;
+		/* 主按钮：浅底深字，不拿强调色当按钮底色 */
+		--c-btn: #e5e7eb;
+		--c-btn-text: #111318;
+
+		--c-mark: #2b3140;
 
 		--c-violet: #a78bfa;
-		--c-violet-soft: #2a2440;
-		--c-amber: #f2b34b;
-		--c-amber-soft: #37301c;
-		--c-blue: #3ba9ee;
-		--c-blue-soft: #14293a;
-		--c-green: #00ca92;
-		--c-green-soft: #12332a;
-		--c-rose: #ff6f70;
-		--c-rose-soft: #3a2326;
+		--c-violet-soft: #262036;
+		--c-amber: #e0a84e;
+		--c-amber-soft: #302718;
+		--c-blue: #60a5fa;
+		--c-blue-soft: #17253a;
+		--c-green: #4bb98a;
+		--c-green-soft: #152a24;
+		--c-rose: #d97b84;
+		--c-rose-soft: #332226;
 
-		--shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
-		--shadow: 0 4px 16px rgba(0, 0, 0, .4);
-		--shadow-lg: 0 12px 36px rgba(0, 0, 0, .5);
+		--shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+		--shadow: 0 2px 10px rgba(0, 0, 0, .35);
+		--shadow-lg: 0 10px 30px rgba(0, 0, 0, .45);
 	}
 }
 
@@ -108,39 +114,45 @@
 html[data-scheme="dark"] {
 	color-scheme: dark;
 
-	/* 深色 = 冷灰蓝电子屏（参考 kaiyi.cool：#191e24 底 + 青蓝强调） */
-	--c-bg: #191e24;
-	--c-bg-soft: #1d232a;
-	--c-surface: #21272f;
-	--c-surface-2: #2a323c;
-	--c-border: #2f3841;
-	--c-border-strong: #414c58;
+	/* 深色 = 中性灰蓝（对齐 kaiyi.cool 的 daisyUI dark 主题）
+	   底 #15171c / 卡片 #1c1f26 / 文字 #dfe3e9 / 次要 #9ca3af / 强调蓝 #60a5fa
+	   整体克制、几乎无彩色：强调色只用在链接、图标与分隔线上 */
+	--c-bg: #15171c;
+	--c-bg-soft: #1c1f26;
+	--c-surface: #1c1f26;
+	--c-surface-2: #292d36;
+	--c-border: #292d36;
+	--c-border-strong: #3a4049;
 
-	--c-text: #e6e9ee;
-	--c-text-soft: #a6adbb;
-	--c-text-mute: #8a929f;
+	--c-text: #dfe3e9;
+	--c-text-soft: #9ca3af;
+	--c-text-mute: #7b8492;
 
-	--c-accent: #00b3f0;
-	--c-accent-soft: #10303d;
-	--c-accent-text: #3ba9ee;
-	--c-on-accent: #052430;
+	--c-accent: #60a5fa;
+	--c-accent-soft: #1b2536;
+	--c-accent-text: #93c5fd;
+	--c-on-accent: #0b1120;
 
-	--c-mark: #2c3742;
+	/* 主按钮：浅底深字，不拿强调色当按钮底色 */
+	--c-btn: #e5e7eb;
+	--c-btn-text: #111318;
+
+	--c-mark: #2b3140;
 
 	--c-violet: #a78bfa;
-	--c-violet-soft: #2a2440;
-	--c-amber: #f2b34b;
-	--c-amber-soft: #37301c;
-	--c-blue: #3ba9ee;
-	--c-blue-soft: #14293a;
-	--c-green: #00ca92;
-	--c-green-soft: #12332a;
-	--c-rose: #ff6f70;
-	--c-rose-soft: #3a2326;
+	--c-violet-soft: #262036;
+	--c-amber: #e0a84e;
+	--c-amber-soft: #302718;
+	--c-blue: #60a5fa;
+	--c-blue-soft: #17253a;
+	--c-green: #4bb98a;
+	--c-green-soft: #152a24;
+	--c-rose: #d97b84;
+	--c-rose-soft: #332226;
 
-	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
-	--shadow: 0 4px 16px rgba(0, 0, 0, .4);
-	--shadow-lg: 0 12px 36px rgba(0, 0, 0, .5);
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+	--shadow: 0 2px 10px rgba(0, 0, 0, .35);
+	--shadow-lg: 0 10px 30px rgba(0, 0, 0, .45);
 }
 
 /* 手动浅色（系统为深色时） */

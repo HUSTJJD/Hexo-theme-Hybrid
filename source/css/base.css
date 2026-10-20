@@ -169,7 +169,7 @@ body.backdrop-dots::before {
 	transition: transform .15s ease, box-shadow .18s ease, background-color .18s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-primary { background: var(--c-accent); color: var(--c-on-accent); box-shadow: var(--shadow-sm); }
+.btn-primary { background: var(--c-btn, var(--c-accent)); color: var(--c-btn-text, var(--c-on-accent)); box-shadow: var(--shadow-sm); }
 .btn-primary:hover { box-shadow: var(--shadow); }
 .btn-ghost { background: var(--c-surface); border-color: var(--c-border); color: var(--c-text); }
 .btn-ghost:hover { border-color: var(--c-border-strong); }
