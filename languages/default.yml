@@ -40,6 +40,9 @@ notes:
 # 个人主页
 home:
   enter: "Browse notes"
+  projects: "Open Source"
+  docs: "Docs"
+  code: "Source"
 
 search:
   placeholder: "Filter the tree, press Enter to search"

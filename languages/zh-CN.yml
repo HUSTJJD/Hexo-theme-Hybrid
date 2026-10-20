@@ -34,6 +34,9 @@ notes:
 
 home:
   enter: "进入笔记"
+  projects: "开源项目"
+  docs: "在线文档"
+  code: "源码"
 
 search:
   placeholder: "过滤目录，回车全站搜索"

@@ -51,6 +51,53 @@
 		</section>
 	<% } %>
 
+	<!-- 开源项目（数据源：source/_data/projects.yml，未配置则整块不渲染） -->
+	<% const projects = (site.data.projects && site.data.projects.projects) || []; %>
+	<% if (projects.length){ %>
+		<section class="section" id="projects">
+			<div class="section-head">
+				<h2 class="section-title"><i class="fa fa-cube" aria-hidden="true"></i> <%= __('home.projects') %></h2>
+				<% if (github){ %>
+					<a class="section-more" href="<%= github %>" target="_blank" rel="noopener">GitHub <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+				<% } %>
+			</div>
+
+			<div class="project-grid">
+				<% projects.forEach(function(p){ %>
+					<article class="project-card">
+						<div class="project-card-head">
+							<% if (p.icon){ %><span class="project-icon"><i class="fa fa-<%= p.icon %>" aria-hidden="true"></i></span><% } %>
+							<h3 class="project-card-title"><%= p.name %></h3>
+							<% if (p.status){ %><span class="chip chip-soft"><%= p.status %></span><% } %>
+						</div>
+
+						<% if (p.tagline){ %><p class="project-card-tagline"><%= p.tagline %></p><% } %>
+						<% if (p.desc){ %><p class="project-card-desc"><%= p.desc %></p><% } %>
+
+						<% if (p.tags && p.tags.length){ %>
+							<div class="project-tags">
+								<% p.tags.forEach(function(t){ %><span class="chip"><%= t %></span><% }); %>
+							</div>
+						<% } %>
+
+						<div class="project-links">
+							<% if (p.url){ %>
+								<a class="btn btn-primary" href="<%= p.url %>" target="_blank" rel="noopener">
+									<i class="fa fa-book" aria-hidden="true"></i> <%= __('home.docs') %>
+								</a>
+							<% } %>
+							<% if (p.repo){ %>
+								<a class="btn btn-ghost" href="<%= p.repo %>" target="_blank" rel="noopener">
+									<i class="fa fa-github" aria-hidden="true"></i> <%= __('home.code') %>
+								</a>
+							<% } %>
+						</div>
+					</article>
+				<% }); %>
+			</div>
+		</section>
+	<% } %>
+
 	<!-- 最近更新 -->
 	<section class="section" id="recent">
 		<div class="section-head">
