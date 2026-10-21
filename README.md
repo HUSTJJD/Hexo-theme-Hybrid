@@ -20,6 +20,8 @@
   全部交给成熟库渲染，主题只负责按需引入运行时与样式
 - **B 站视频嵌入** —— 内置 `{% bilibili %}` 标签，BV / av 号、分 P、弹幕、比例都可调
 - **分类只在一处展开** —— `/categories/` 是唯一的「主题 -> 文章」地图，`/notes/` 走时间线，首页只看精选
+- **实时数据** —— 首页项目卡显示 GitHub star / fork / issue 数，论文条目显示引用数；
+  前端拉取公共 API 并缓存 6 小时，拉取失败自动隐藏，不写死在构建期
 
 ## Installation
 
@@ -71,7 +73,7 @@ layout: home
 | `source/_data/profile.yml` | Hero | 姓名、简介、联系方式、要点、技能 |
 | `source/_data/home.yml` | 通用文案 | 眉标、按钮、区块标题 |
 | `source/_data/works.yml` | WORKS / EDUCATION | 工作与学习经历，按组织分组 |
-| `source/_data/projects.yml` | PROJECTS | 开源项目卡片（含 GitHub Star 按钮） |
+| `source/_data/projects.yml` | PROJECTS | 开源项目卡片（star / fork 实时拉取） |
 | `source/_data/papers.yml` | PAPERS / PATENTS | 论文与专利 |
 
 所有区块都是**可选**的：yml 不存在或为空时整块不渲染，页面不会留空洞。
@@ -303,13 +305,14 @@ language: zh-CN
 | `post` | 正文字数、上下篇、复制按钮、版权 |
 | `aria` | `aria-label` / `title`，读屏器与 tooltip |
 | `toc` | 目录树：收起 / 展开 / 打开索引笔记 |
+| `metrics` | 实时数据：star / fork / issue / 引用数的后缀文案 |
 
 规则：
 
 - **缺键回退** —— 每种语言只需覆盖自己有的键，其余自动用 `default.yml`（English）
 - **变量用 `%d` / `%s`** —— 例如 `__('notes.desc', site.posts.length)`；带链接的用 `<%- __('footer.powered', '<a …>Hexo</a>') %>`
 - **JS 里的文案** —— 由 `layout.ejs` 注入到 `window.__hybrid.i18n`（`copy` / `copied` / `collapse` / `expand`），
-  `js/main.js` 读它，取不到时按 `<html lang>` 回退，所以新增语言不用改 JS
+  `js/main.js` 读它（实时数据那部分由 `js/metrics.js` 读），取不到时按 `<html lang>` 回退，所以新增语言不用改 JS
 - **日期** —— Hexo 的 `date()` 已按 `language` 设置 moment locale，`'LL'` 这类本地化格式会自动变成「2026年10月10日」
 
 新增一种语言：复制 `languages/default.yml`，改名为 `<语言代码>.yml`（如 `fr.yml`），翻译后放在 `languages/` 下即可，

@@ -43,9 +43,11 @@
 	<% } %>
 
 	<!-- GitHub 官方按钮（buttons.github.io）：只在首页的项目卡片里用到 -->
+	<!-- 开了 metrics 后 star / fork 由 js/metrics.js 实时拉取，这个 iframe 按钮就用不上了 -->
 	<!-- 注意：partial 拿不到 layout.ejs 的局部变量，这里直接看 page.layout -->
 	<% const isHome = page.layout === 'home' || page.layout === 'landing'; %>
-	<% if (isHome){ %>
+	<% const useGhButtons = isHome && !(theme.metrics && theme.metrics.enable && theme.metrics.github && theme.metrics.github.enable); %>
+	<% if (useGhButtons){ %>
 		<script async defer src="https://buttons.github.io/buttons.js"></script>
 	<% } %>
 

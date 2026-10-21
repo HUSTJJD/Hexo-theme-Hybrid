@@ -38,6 +38,14 @@ home:
   docs: "在线文档"
   code: "源码"
 
+metrics:
+  stars: "star"
+  forks: "fork"
+  issues: "个未关闭 issue"
+  watchers: "关注者"
+  updated: "最近推送"
+  citations: "次引用"
+
 search:
   placeholder: "过滤目录，回车全站搜索"
 

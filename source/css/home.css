@@ -222,6 +222,39 @@
 /* GitHub 官方按钮：脚本会把 <a> 换成 iframe，这里只管间距 */
 .project-links .github-button { margin-left: 2px; }
 
+/* ------------------------------------------------------------
+   实时数据（由 js/metrics.js 渲染）
+   容器本身是空壳：拉到数据就填 chip，失败就整块移除
+   ------------------------------------------------------------ */
+.metrics {
+	display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px;
+}
+.metric {
+	display: inline-flex; align-items: center; gap: 5px;
+	padding: 3px 9px;
+	border: 1px solid var(--c-border); border-radius: 999px;
+	background: var(--c-surface-2); color: var(--c-text-soft);
+	font-size: 12px; line-height: 1.7; white-space: nowrap;
+	font-style: normal; text-decoration: none;
+	transition: color .16s ease, border-color .16s ease;
+}
+a.metric:hover { border-color: var(--c-accent); color: var(--c-accent); }
+.metric i { font-size: 11px; }
+
+/* 数据到达前的占位，宽度贴近真实 chip，避免数字填进来时跳动 */
+.metric-skeleton {
+	width: 56px; height: 22px; padding: 0;
+	border: 0; background: var(--c-border);
+	animation: metric-pulse 1.3s ease-in-out infinite;
+}
+@keyframes metric-pulse {
+	0%, 100% { opacity: .4; }
+	50% { opacity: .85; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.metric-skeleton { animation: none; opacity: .5; }
+}
+
 @media (max-width: 860px) {
 	.hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px 22px; }
 	.hero-name { font-size: 27px; }

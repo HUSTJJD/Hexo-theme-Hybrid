@@ -44,6 +44,17 @@ home:
   docs: "Docs"
   code: "Source"
 
+# 实时数据（js/metrics.js 拉取 GitHub / 引用数后渲染）
+# 全部是「跟在数字后面」的后缀，因此不要写 %d —— hexo 的 __() 会对字符串跑 sprintf，
+# 没有占位符参数时带 %d 的串会直接抛错
+metrics:
+  stars: "stars"
+  forks: "forks"
+  issues: "open issues"
+  watchers: "watchers"
+  updated: "last push"
+  citations: "citations"
+
 search:
   placeholder: "Filter the tree, press Enter to search"
 

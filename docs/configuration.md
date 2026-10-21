@@ -78,6 +78,37 @@ appearance:
 两套色板在 `source/css/tokens.css`：浅色为 `:root`，深色为 `html[data-scheme="dark"]`
 与 `prefers-color-scheme: dark` 下的 `html[data-scheme="auto"]`。改配色只动这个文件即可。
 
+## 实时数据（star / fork / 引用数）
+
+```yaml
+metrics:
+  enable: true
+  cache_ttl: 6          # 缓存小时数；0 = 每次刷新都请求
+  github:
+    enable: true
+    fields:             # stars | forks | issues | watchers | updated
+      - stars
+      - forks
+  citation:
+    enable: true
+    provider: openalex  # openalex | semanticscholar
+    mailto: ''          # OpenAlex 的礼貌参数，填邮箱能进「好公民池」
+    api_key: ''         # Semantic Scholar 的 key，可选
+```
+
+数据由 `js/metrics.js` 在前端拉取（`api.github.com` / `api.openalex.org`，都免 key）：
+
+- 先读 `localStorage` 缓存，未过期就不发请求——既是省限流，也让数字立刻就位
+- 请求失败时：有旧缓存继续显示旧值，没有就整块移除，不留占位符
+- `enable: false` 后项目卡退回 GitHub 官方按钮（`buttons.github.io`），论文不再显示引用数
+
+数据源取自 `projects.yml` 的 `repo` 与 `papers.yml` 的 `doi`（或从 `url` 里的 doi.org 推导），
+字段说明见[个人主页文档](homepage.md)。
+
+!!! warning "GitHub 未认证限流 60 次/小时/IP"
+    `cache_ttl` 不建议设成 0。真被限流时会自动退到 shields.io 补 star / fork，
+    但那个源只给这两个字段。
+
 ## 代码块
 
 ```yaml

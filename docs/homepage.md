@@ -126,8 +126,8 @@ projects:
     status: Early refactor
 ```
 
-`repo` 会渲染成 [GitHub 官方按钮](https://buttons.github.io/)（Star + star 数），
-脚本只在首页按需加载，其他页面不会引入。
+`repo` 会渲染成源码按钮，卡片上还会**实时显示 star / fork 数**（见下方「实时数据」）。
+把主题配置的 `metrics.enable` 关掉，就退回 [GitHub 官方按钮](https://buttons.github.io/)（Star + star 数）。
 
 !!! tip "经历与开源项目要分开"
     职业经历写 `works.yml`，开源项目写 `projects.yml`。
@@ -159,6 +159,42 @@ patents:
 !!! warning "YAML 里含冒号的值必须加引号"
     `title: TransCFD: A decoder` 会解析失败，要写成 `title: 'TransCFD: A decoder'`。
 
-## 8. 最近更新
+## 8. 实时数据：star / fork / 引用数
+
+项目卡的 **star / fork / issue 数**和论文条目的**引用数**是**页面加载后实时拉取**的，
+不写在 yml 里——这些数字一直在变，构建期写死就等于立刻过期。
+
+需要什么：
+
+| 区块 | 触发字段 | 说明 |
+| --- | --- | --- |
+| PROJECTS | `repo` | 自动解析出 `owner/name`，也可以直接写 `owner/name` |
+| PAPERS / PATENTS | `doi` 或 `url` | 优先取 `doi` 字段；否则从 `url` 里的 `doi.org/...` 推导 |
+
+```yaml
+# projects.yml
+projects:
+  - name: UnLuaNova
+    repo: https://github.com/you/UnLuaNova    # -> star / fork 实时显示
+
+# papers.yml
+papers:
+  items:
+    - title: 'TransCFD: A transformer-based decoder for flow field prediction'
+      url: https://doi.org/10.1016/j.engappai.2023.106340   # -> 引用数实时显示
+```
+
+工作方式：
+
+1. 先读 `localStorage` 缓存（默认 6 小时），命中且未过期就直接用，**不发请求**
+2. 过期才请求公共 API：GitHub 用 `api.github.com`，引用数用 OpenAlex（可换 Semantic Scholar）
+3. 请求失败：有旧缓存就继续显示旧值，没有就把这一块整个移除，**不留空洞**
+4. 数据到达前显示骨架占位，不会闪数字
+
+开关与字段在主题配置的 `metrics` 段（见[配置文档](configuration.md)）。
+这些 API 都是免 key 的公开接口，但 GitHub 未认证限流为 60 次/小时/IP，
+所以缓存时长不建议设成 0。
+
+## 9. 最近更新
 
 首页底部自动取全站最近更新的笔记，条数由主题配置的 `notes.recent_count` 决定。

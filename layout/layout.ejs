@@ -50,15 +50,27 @@
 			version: <%- JSON.stringify(String(theme.version || '1')) %>,
 			mermaid: <%- JSON.stringify((theme.markdown && theme.markdown.mermaid) || {}) %>,
 			math: <%- JSON.stringify((theme.markdown && theme.markdown.math) || {}) %>,
+			metrics: <%- JSON.stringify(theme.metrics || {}) %>,
 			i18n: {
 				copy: <%- JSON.stringify(__('post.copy')) %>,
 				copied: <%- JSON.stringify(__('post.copied')) %>,
 				collapse: <%- JSON.stringify(__('toc.collapse')) %>,
-				expand: <%- JSON.stringify(__('toc.expand')) %>
+				expand: <%- JSON.stringify(__('toc.expand')) %>,
+				metrics: {
+					stars: <%- JSON.stringify(__('metrics.stars')) %>,
+					forks: <%- JSON.stringify(__('metrics.forks')) %>,
+					issues: <%- JSON.stringify(__('metrics.issues')) %>,
+					watchers: <%- JSON.stringify(__('metrics.watchers')) %>,
+					updated: <%- JSON.stringify(__('metrics.updated')) %>,
+					citations: <%- JSON.stringify(__('metrics.citations')) %>
+				}
 			}
 		};
 	</script>
 
 	<script src="<%- url_for('js/main.js') + assetV %>"></script>
+	<% if (theme.metrics && theme.metrics.enable){ %>
+		<script src="<%- url_for('js/metrics.js') + assetV %>"></script>
+	<% } %>
 </body>
 </html>

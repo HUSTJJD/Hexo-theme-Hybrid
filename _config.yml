@@ -16,7 +16,7 @@
 # 站点发布新版（结构调整 / 样式重构 / JS 逻辑变更）时把它 +1：
 #   1. css / js 的 URL 会带上 ?v=<version>，浏览器重新拉取，不再吃旧文件缓存
 #   2. 旧版本的本地缓存会被丢弃，深浅色与侧栏偏好自动迁移到新版本
-version: '7'
+version: '8'
 
 #------------------------------------------------------
 # 站点标识
@@ -146,6 +146,34 @@ categories:
 notes:
   # 首页「最近更新」取多少条
   recent_count: 6
+
+#------------------------------------------------------
+# 实时数据：GitHub star / fork、论文引用数
+#
+# 这些数字会一直变，构建期写死就等于立刻过期，所以由前端在页面加载后拉取：
+#   1. 先读 localStorage 缓存，命中且没过期就直接用，不发请求
+#   2. 过期才请求，结果写回缓存
+#   3. 请求失败：有缓存继续显示缓存值，没缓存就整块隐藏，不留占位符
+# 数据源：projects.yml 的 repo、papers.yml 的 doi（或从 url 里的 doi.org 链接推导）
+#------------------------------------------------------
+metrics:
+  # 总开关；关掉后项目卡退回 GitHub 官方按钮，论文不再显示引用数
+  enable: true
+  # 缓存时长（小时）。0 = 每次刷新都请求（GitHub 未认证限流 60 次/小时/IP，不建议）
+  cache_ttl: 6
+  github:
+    enable: true
+    # 显示哪些字段，按顺序渲染：stars | forks | issues | watchers | updated
+    fields:
+      - stars
+      - forks
+  citation:
+    enable: true
+    # 数据源：openalex（无需 key，推荐）| semanticscholar
+    provider: openalex
+    # OpenAlex 的 mailto 与 Semantic Scholar 的 key 都是可选的，填了能提额 / 更稳定
+    mailto: ''
+    api_key: ''
 
 #------------------------------------------------------
 # 增强 Markdown：图表与公式
