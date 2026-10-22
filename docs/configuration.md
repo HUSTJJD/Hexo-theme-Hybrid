@@ -94,7 +94,13 @@ metrics:
     provider: openalex  # openalex | semanticscholar
     mailto: ''          # OpenAlex 的礼貌参数，填邮箱能进「好公民池」
     api_key: ''         # Semantic Scholar 的 key，可选
+  sort:
+    projects: true      # 项目按 star 数倒序
+    papers: true        # 论文按引用数倒序
 ```
+
+`sort` 在数据到位后重排对应区块：yml 里随便怎么写顺序，页面上都按主指标从高到低排。
+没拿到数据的条目留在原位并沉到末尾；整块都没数据就保持 yml 的顺序不动。
 
 数据由 `js/metrics.js` 在前端拉取（`api.github.com` / `api.openalex.org`，都免 key）：
 

@@ -190,6 +190,7 @@ papers:
 2. 过期才请求公共 API：GitHub 用 `api.github.com`，引用数用 OpenAlex（可换 Semantic Scholar）
 3. 请求失败：有旧缓存就继续显示旧值，没有就把这一块整个移除，**不留空洞**
 4. 数据到达前显示骨架占位，不会闪数字
+5. 数据到位后**按主指标重排**：项目按 star 数、论文按引用数，都倒序（yml 里的顺序不用管）
 
 开关与字段在主题配置的 `metrics` 段（见[配置文档](configuration.md)）。
 这些 API 都是免 key 的公开接口，但 GitHub 未认证限流为 60 次/小时/IP，

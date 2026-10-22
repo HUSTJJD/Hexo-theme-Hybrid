@@ -165,7 +165,7 @@
 				<% } %>
 			</div>
 
-			<div class="project-grid">
+			<div class="project-grid" data-metrics-group="repo">
 				<% projects.forEach(function(p){
 					const slug = ghMetrics ? repoSlug(p.repo) : '';
 				%>
@@ -226,7 +226,7 @@
 				<h2 class="section-title"><%= cfg.title || sec.fallback %></h2>
 			</div>
 
-			<ul class="pub-list">
+			<ul class="pub-list" data-metrics-group="citation">
 				<% cfg.items.forEach(function(it){
 					const doi = citeMetrics ? paperDoi(it) : '';
 				%>

@@ -52,6 +52,8 @@
 	/* ---------------------------------------------------------
 	   字段定义：渲染顺序由配置的 fields 决定
 	   --------------------------------------------------------- */
+	// 每个容器的主指标值（star 数 / 引用数），排序时用
+	const values = new Map();
 	const GH = CFG.github || {};
 	const CITE = CFG.citation || {};
 
@@ -215,6 +217,8 @@
 		el.textContent = '';
 		items.forEach(item => el.appendChild(metricEl(item)));
 		el.setAttribute('data-state', 'ready');
+		// 排序只认主指标：项目看 star，论文看引用数
+		values.set(el, kind === 'repo' ? data.stars : data.count);
 	}
 
 	function skeleton(el, kind) {
@@ -229,21 +233,54 @@
 	}
 
 	/* ---------------------------------------------------------
+	   排序：数据到位后重排所在区块
+	   容器用 data-metrics-group 声明自己是哪种区块，JS 按主指标倒序重排它的直接子节点。
+	   没拿到数据的条目留在原位（排在有数据的后面），一个数据都没有就整块不动。
+	   --------------------------------------------------------- */
+	const SORT_KEY = { repo: 'projects', citation: 'papers' };
+
+	function sortGroups() {
+		const cfg = CFG.sort || {};
+		Array.prototype.forEach.call(document.querySelectorAll('[data-metrics-group]'), group => {
+			const kind = group.getAttribute('data-metrics-group');
+			if (!cfg[SORT_KEY[kind]]) return;
+
+			const scored = Array.prototype.slice.call(group.children).map(child => {
+				const m = child.querySelector('[data-metrics]');
+				const v = m ? values.get(m) : undefined;
+				return { el: child, v: typeof v === 'number' ? v : null };
+			});
+			if (!scored.some(s => s.v !== null)) return;
+
+			// 保持原始相对顺序：有数据的按值倒序，没数据的沉到最后
+			scored.forEach((s, i) => { s.i = i; });
+			scored.sort((a, b) => {
+				if (a.v === null && b.v === null) return a.i - b.i;
+				if (a.v === null) return 1;
+				if (b.v === null) return -1;
+				return b.v - a.v || a.i - b.i;
+			});
+			// appendChild 会把已存在的节点搬到末尾，依次搬一遍即完成重排
+			scored.forEach(s => group.appendChild(s.el));
+		});
+	}
+
+	/* ---------------------------------------------------------
 	   逐个元素挂载：先渲染缓存 / 骨架，再视情况后台刷新
 	   --------------------------------------------------------- */
 	function mount(el) {
 		const kind = el.getAttribute('data-metrics');
 		const key = el.getAttribute(kind === 'repo' ? 'data-repo' : 'data-doi');
-		if (!kind || !key) { el.remove(); return; }
+		if (!kind || !key) { el.remove(); return Promise.resolve(); }
 
 		const cacheKey = kind + ':' + key;
 		const cached = readCache(cacheKey);
 		if (cached) render(el, kind, key, cached.d);
 		else skeleton(el, kind);
 
-		if (cached && (Date.now() - cached.t) < TTL) return;
+		if (cached && (Date.now() - cached.t) < TTL) return Promise.resolve();
 
-		load(kind, key).then(data => {
+		return load(kind, key).then(data => {
 			if (!data) throw new Error('empty');
 			writeCache(cacheKey, data);
 			render(el, kind, key, data);
@@ -253,5 +290,6 @@
 		});
 	}
 
-	Array.prototype.forEach.call(document.querySelectorAll('[data-metrics]'), mount);
+	const pending = Array.prototype.map.call(document.querySelectorAll('[data-metrics]'), mount);
+	Promise.all(pending).then(sortGroups, sortGroups);
 })();
